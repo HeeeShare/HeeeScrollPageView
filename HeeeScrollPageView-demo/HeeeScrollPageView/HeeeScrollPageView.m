@@ -107,8 +107,11 @@
 - (void)addChildVCIndex:(NSUInteger)index {
     UIViewController *childVC = _childVCArr[index];
     childVC.view.frame = CGRectMake(index*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.heee_height);
+    
+    //如果两次执行viewDidLoad给你带来不便，可以删除这两行代码，只是需要你自己注意childVC.view.bounds
     [childVC.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [childVC viewDidLoad];
+    
     _NEWVC = childVC;
     [_parentVC addChildViewController:childVC];
     [_scrollView addSubview:childVC.view];
