@@ -9,10 +9,12 @@
 /* Begin PBXBuildFile section */
 		A7FA2B0D2185600900439166 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B0C2185600900439166 /* AppDelegate.m */; };
 		A7FA2B102185600900439166 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B0F2185600900439166 /* ViewController.m */; };
-		A7FA2B132185600900439166 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A7FA2B112185600900439166 /* Main.storyboard */; };
 		A7FA2B152185600900439166 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7FA2B142185600900439166 /* Assets.xcassets */; };
-		A7FA2B182185600900439166 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A7FA2B162185600900439166 /* LaunchScreen.storyboard */; };
 		A7FA2B1B2185600900439166 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B1A2185600900439166 /* main.m */; };
+		A7FA2B232185603F00439166 /* ColorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B212185603F00439166 /* ColorViewController.m */; };
+		A7FA2B29218560C000439166 /* UIView+HeeeQuickFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B25218560C000439166 /* UIView+HeeeQuickFrame.m */; };
+		A7FA2B2A218560C000439166 /* HeeeScrollPageIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B27218560C000439166 /* HeeeScrollPageIndicator.m */; };
+		A7FA2B2D218560DE00439166 /* HeeeScrollPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B2C218560DE00439166 /* HeeeScrollPageView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,11 +23,17 @@
 		A7FA2B0C2185600900439166 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		A7FA2B0E2185600900439166 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		A7FA2B0F2185600900439166 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		A7FA2B122185600900439166 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A7FA2B142185600900439166 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A7FA2B172185600900439166 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A7FA2B192185600900439166 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A7FA2B1A2185600900439166 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A7FA2B212185603F00439166 /* ColorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorViewController.m; sourceTree = "<group>"; };
+		A7FA2B222185603F00439166 /* ColorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorViewController.h; sourceTree = "<group>"; };
+		A7FA2B25218560C000439166 /* UIView+HeeeQuickFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+HeeeQuickFrame.m"; sourceTree = "<group>"; };
+		A7FA2B26218560C000439166 /* HeeeScrollPageIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageIndicator.h; sourceTree = "<group>"; };
+		A7FA2B27218560C000439166 /* HeeeScrollPageIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageIndicator.m; sourceTree = "<group>"; };
+		A7FA2B28218560C000439166 /* UIView+HeeeQuickFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+HeeeQuickFrame.h"; sourceTree = "<group>"; };
+		A7FA2B2B218560DE00439166 /* HeeeScrollPageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageView.h; sourceTree = "<group>"; };
+		A7FA2B2C218560DE00439166 /* HeeeScrollPageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,13 +70,27 @@
 				A7FA2B0C2185600900439166 /* AppDelegate.m */,
 				A7FA2B0E2185600900439166 /* ViewController.h */,
 				A7FA2B0F2185600900439166 /* ViewController.m */,
-				A7FA2B112185600900439166 /* Main.storyboard */,
+				A7FA2B222185603F00439166 /* ColorViewController.h */,
+				A7FA2B212185603F00439166 /* ColorViewController.m */,
+				A7FA2B24218560AD00439166 /* HeeeScrollPageView */,
 				A7FA2B142185600900439166 /* Assets.xcassets */,
-				A7FA2B162185600900439166 /* LaunchScreen.storyboard */,
 				A7FA2B192185600900439166 /* Info.plist */,
 				A7FA2B1A2185600900439166 /* main.m */,
 			);
 			path = "HeeeScrollPageView-demo";
+			sourceTree = "<group>";
+		};
+		A7FA2B24218560AD00439166 /* HeeeScrollPageView */ = {
+			isa = PBXGroup;
+			children = (
+				A7FA2B2B218560DE00439166 /* HeeeScrollPageView.h */,
+				A7FA2B2C218560DE00439166 /* HeeeScrollPageView.m */,
+				A7FA2B26218560C000439166 /* HeeeScrollPageIndicator.h */,
+				A7FA2B27218560C000439166 /* HeeeScrollPageIndicator.m */,
+				A7FA2B28218560C000439166 /* UIView+HeeeQuickFrame.h */,
+				A7FA2B25218560C000439166 /* UIView+HeeeQuickFrame.m */,
+			);
+			path = HeeeScrollPageView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,9 +150,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A7FA2B182185600900439166 /* LaunchScreen.storyboard in Resources */,
 				A7FA2B152185600900439166 /* Assets.xcassets in Resources */,
-				A7FA2B132185600900439166 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,32 +161,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7FA2B2A218560C000439166 /* HeeeScrollPageIndicator.m in Sources */,
 				A7FA2B102185600900439166 /* ViewController.m in Sources */,
+				A7FA2B29218560C000439166 /* UIView+HeeeQuickFrame.m in Sources */,
+				A7FA2B2D218560DE00439166 /* HeeeScrollPageView.m in Sources */,
 				A7FA2B1B2185600900439166 /* main.m in Sources */,
+				A7FA2B232185603F00439166 /* ColorViewController.m in Sources */,
 				A7FA2B0D2185600900439166 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		A7FA2B112185600900439166 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A7FA2B122185600900439166 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		A7FA2B162185600900439166 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A7FA2B172185600900439166 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		A7FA2B1C2185600900439166 /* Debug */ = {
@@ -288,11 +293,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 27HH8LNC45;
 				INFOPLIST_FILE = "HeeeScrollPageView-demo/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "www.Heee.HeeeScrollPageView-demo";
+				PRODUCT_BUNDLE_IDENTIFIER = www.Heee.cessssss;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -305,11 +311,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 27HH8LNC45;
 				INFOPLIST_FILE = "HeeeScrollPageView-demo/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "www.Heee.HeeeScrollPageView-demo";
+				PRODUCT_BUNDLE_IDENTIFIER = www.Heee.cessssss;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
