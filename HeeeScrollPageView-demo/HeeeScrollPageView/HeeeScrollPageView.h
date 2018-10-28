@@ -49,12 +49,4 @@
 @property (nonatomic,assign) CGFloat titleOffsetY;
 @property (nonatomic,assign) CGFloat lineOffsetY;
 
-/**
- 点击标题切换页面动画开关，默认NO，没有动画。
- 开启动画，可能会将动画经过且没有加载过的controller加载。
- 如果之间的controller较多，且页面操作复杂，会引起卡顿。
- 如果controller已经加载，则没有影响。
- */
-@property (nonatomic,assign) BOOL clickTitleAnimate;
-
 @end

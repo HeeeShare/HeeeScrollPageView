@@ -14,6 +14,7 @@
 @property (nonatomic,  weak) UIViewController *parentVC;
 @property (nonatomic,strong) NSMutableArray <UIViewController *>*childVCArr;
 @property (nonatomic,strong) UIScrollView *scrollView;
+@property (nonatomic,strong) HeeeScrollPageIndicator *pageIndicator;
 @property (nonatomic,assign) CGFloat width;
 @property (nonatomic,assign) NSUInteger willAppearIndex;
 @property (nonatomic,assign) NSUInteger didAppearIndex;
@@ -22,10 +23,8 @@
 @property (nonatomic,strong) NSMutableArray *loadVCArray;
 @property (nonatomic,strong) NSMutableArray *appearVCArray;
 @property (nonatomic,strong) UIViewController *NEWVC;
-@property (nonatomic,strong) HeeeScrollPageIndicator *pageIndicator;
 @property (nonatomic,assign) BOOL clickFlag;
-@property (nonatomic,assign) BOOL addRemoveTitleFlag;
-@property (nonatomic,assign) BOOL insideContentSizeFlag;
+@property (nonatomic,assign) BOOL animate;
 @property (nonatomic,strong) NSTimer *timer;
 
 @end
@@ -54,7 +53,15 @@
         __weak typeof(self) weakSelf = self;
         _pageIndicator.showPage = ^(NSUInteger index) {
             weakSelf.clickFlag = YES;
-            [weakSelf.scrollView setContentOffset:CGPointMake(weakSelf.bounds.size.width*index, 0) animated:weakSelf.clickTitleAnimate];
+            
+            weakSelf.animate = YES;
+            for (NSUInteger i = MIN(index, weakSelf.didAppearIndex) + 1; i < MAX(index, weakSelf.didAppearIndex); i++) {
+                if (![weakSelf.loadVCArray containsObject:weakSelf.childVCArr[i]]) {
+                    weakSelf.animate = NO;
+                }
+            }
+            
+            [weakSelf.scrollView setContentOffset:CGPointMake(weakSelf.bounds.size.width*index, 0) animated:weakSelf.animate];
         };
         [self addSubview:_pageIndicator];
         
@@ -107,16 +114,14 @@
 - (void)addChildVCIndex:(NSUInteger)index {
     UIViewController *childVC = _childVCArr[index];
     childVC.view.frame = CGRectMake(index*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.heee_height);
-    
-    //如果两次执行viewDidLoad给你带来不便，可以删除这两行代码，只是需要你自己注意childVC.view.bounds
     [childVC.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [childVC viewDidLoad];
-    
     _NEWVC = childVC;
     [_parentVC addChildViewController:childVC];
     [_scrollView addSubview:childVC.view];
     [_loadVCArray addObject:childVC];
     [_appearVCArray addObject:childVC];
+    _didAppearIndex = index;
 }
 
 - (void)addChildVC:(UIViewController *)childVC toIndex:(NSUInteger)index {
@@ -127,7 +132,6 @@
             index = _childVCArr.count;
         }
         
-        _addRemoveTitleFlag = YES;
         [_childVCArr insertObject:childVC atIndex:index];
         
         for (NSUInteger i = 0; i < _loadVCArray.count; i++) {
@@ -254,148 +258,89 @@
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSUInteger totalPage = _childVCArr.count;
     CGFloat offsetX = scrollView.contentOffset.x;
+    NSUInteger page = scrollView.contentOffset.x/_width;
     
-    if ((!_clickTitleAnimate && _clickFlag) || _addRemoveTitleFlag) {
+    if (_clickFlag && !_animate && offsetX - page*_width == 0) {
         _clickFlag = NO;
-        _addRemoveTitleFlag = NO;
         _pageIndicator.offsetX = offsetX;
-        NSUInteger page = scrollView.contentOffset.x/_width;
-        UIViewController *disAppearVC = _childVCArr[_didAppearIndex];
-        [disAppearVC viewWillDisappear:NO];
-        [disAppearVC viewDidDisappear:NO];
-        [_appearVCArray removeObject:disAppearVC];
-        _willDisappearIndex = _didAppearIndex;
-        _didDisappearIndex = _didAppearIndex;
-        
-        UIViewController *appearVC = _childVCArr[page];
-        if ([_loadVCArray containsObject:appearVC]) {
-            [appearVC viewWillAppear:NO];
-            [appearVC viewDidAppear:NO];
-            if (![_appearVCArray containsObject:appearVC]) {
-                [_appearVCArray addObject:appearVC];
-            }
+        UIViewController *willAppearVC = _childVCArr[page];
+        if ([_loadVCArray containsObject:willAppearVC]) {
+            _didAppearIndex = page;
+            [willAppearVC viewWillAppear:NO];
+            [willAppearVC viewDidAppear:NO];
+            [_appearVCArray addObject:willAppearVC];
         }else{
             [self addChildVCIndex:page];
-            _NEWVC = nil;
         }
         
-        _willAppearIndex = page;
-        _didAppearIndex = page;
+        [self clearShouldDisappearVC];
+        _NEWVC = nil;
         return;
     }
     
-    if (offsetX > 0 && offsetX < (totalPage - 1)*_width) {
-        if (_NEWVC) {
-            NSUInteger index = [_childVCArr indexOfObject:_NEWVC];
-            if (offsetX > index*_width || offsetX < (index - 1)*_width) {
-                _NEWVC = nil;
+    if (offsetX >= 0 && offsetX <= (_childVCArr.count- 1)*_width) {
+        _pageIndicator.offsetX = offsetX;
+        
+        if (offsetX - page*_width != 0) {
+            for (NSUInteger i = page; i <= page + 1; i++) {
+                UIViewController *willAppearVC = _childVCArr[i];
+                if (![_loadVCArray containsObject:willAppearVC]) {
+                    [self addChildVCIndex:i];
+                    [self clearShouldDisappearVC];
+                    break;
+                }
             }
         }
         
-        _insideContentSizeFlag = YES;
-        _pageIndicator.offsetX = offsetX;
-        
-        for (NSUInteger i = 0; i < _childVCArr.count; i++) {
-            if (offsetX > i*_width && offsetX < (i+1)*_width) {
-                if (_willAppearIndex != i && _willDisappearIndex != i) {
-                    _willAppearIndex = i;
-                    _willDisappearIndex = i + 1;
-                    UIViewController *willDisappearVC = _childVCArr[_willDisappearIndex];
-                    [willDisappearVC viewWillDisappear:YES];
-                    
-                    UIViewController *willAppearVC = _childVCArr[_willAppearIndex];
-                    if ([_loadVCArray containsObject:willAppearVC]) {
-                        if (_NEWVC != willAppearVC) {
-                            [willAppearVC viewWillAppear:YES];
-                            if (![_appearVCArray containsObject:willAppearVC]) {
-                                [_appearVCArray addObject:willAppearVC];
-                            }
-                        }
-                    }else{
-                        [self addChildVCIndex:i];
-                    }
-                }
-                
-                if (_willAppearIndex != i + 1  && _willDisappearIndex != i + 1) {
-                    _willAppearIndex = i + 1;
-                    _willDisappearIndex = i;
-                    UIViewController *willDisappearVC = _childVCArr[_willDisappearIndex];
-                    [willDisappearVC viewWillDisappear:YES];
-                    
-                    UIViewController *willAppearVC = _childVCArr[_willAppearIndex];
-                    if ([_loadVCArray containsObject:willAppearVC]) {
-                        if (_NEWVC != willAppearVC) {
-                            [willAppearVC viewWillAppear:YES];
-                            if (![_appearVCArray containsObject:willAppearVC]) {
-                                [_appearVCArray addObject:willAppearVC];
-                            }
-                        }
-                    }else{
-                        [self addChildVCIndex:i + 1];
-                    }
-                }
+        if (_clickFlag && offsetX - page*_width == 0) {
+            _clickFlag = NO;
+            _didAppearIndex = page;
+            UIViewController *didAppearVC = _childVCArr[_didAppearIndex];
+            if (_NEWVC != didAppearVC) {
+                [didAppearVC viewWillAppear:NO];
+                [didAppearVC viewDidAppear:NO];
+                [_appearVCArray addObject:didAppearVC];
             }
+            
+            [self clearShouldDisappearVC];
+            _NEWVC = nil;
         }
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    CGFloat offsetX = scrollView.contentOffset.x;
     NSUInteger page = scrollView.contentOffset.x/_width;
     
-    if (scrollView.contentOffset.x >= 0 && scrollView.contentOffset.x <= (_childVCArr.count- 1)*_width) {
-        if (_didAppearIndex == 0 && page == 0  && _willAppearIndex == 0) {
-            [self clearShouldDisappearVC:_insideContentSizeFlag];
-            return;
-        }
+    if (offsetX >= 0 && offsetX <= (_childVCArr.count- 1)*_width && _didAppearIndex != page) {
+        _didAppearIndex = page;
+        UIViewController *didAppearVC = _childVCArr[_didAppearIndex];
         
-        if (_didAppearIndex == self.childVCArr.count - 1 && page == self.childVCArr.count - 1 && _willAppearIndex == self.childVCArr.count - 1) {
-            [self clearShouldDisappearVC:_insideContentSizeFlag];
-            return;
-        }
-        
-        _willAppearIndex = page;
-        UIViewController *didAppearVC = _childVCArr[_willAppearIndex];
-        if (didAppearVC != _NEWVC) {
+        if (_NEWVC != didAppearVC) {
+            [didAppearVC viewWillAppear:NO];
             [didAppearVC viewDidAppear:YES];
-            if (![_appearVCArray containsObject:didAppearVC]) {
-                [_appearVCArray addObject:didAppearVC];
-            }
-            _didDisappearIndex = _willDisappearIndex;
-        }
-        _didAppearIndex = _willAppearIndex;
-        
-        if (_willDisappearIndex != _willAppearIndex) {
-            UIViewController *didDisAppearVC = _childVCArr[_willDisappearIndex];
-            [didDisAppearVC viewDidDisappear:YES];
-            [_appearVCArray removeObject:didDisAppearVC];
-            _willDisappearIndex = _willAppearIndex;
+            [_appearVCArray addObject:didAppearVC];
         }
         
-        [self clearShouldDisappearVC:NO];
-        
+        [self clearShouldDisappearVC];
         _NEWVC = nil;
     }
 }
 
-- (void)clearShouldDisappearVC:(BOOL)flag {
+- (void)clearShouldDisappearVC {
     NSMutableArray *temArr = [NSMutableArray array];
     UIViewController *didAppearVC = _childVCArr[_didAppearIndex];
     
     for (NSUInteger i = 0; i < _appearVCArray.count; i++) {
         UIViewController *shouldDisappearVC = _appearVCArray[i];
         if (shouldDisappearVC != didAppearVC) {
+            [shouldDisappearVC viewWillDisappear:NO];
             [shouldDisappearVC viewDidDisappear:NO];
             [temArr addObject:shouldDisappearVC];
         }
     }
     
-    if (flag) {
-        [didAppearVC viewDidAppear:YES];
-    }
-    
-    _insideContentSizeFlag = NO;
     [_appearVCArray removeObjectsInArray:temArr];
 }
 
