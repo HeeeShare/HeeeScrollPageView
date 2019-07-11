@@ -7,17 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		955F140C22D784E400DEC2E0 /* HeeeScrollPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F140822D784E400DEC2E0 /* HeeeScrollPageView.m */; };
+		955F140D22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F140A22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m */; };
+		955F141922D7850300DEC2E0 /* Page1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F141022D7850300DEC2E0 /* Page1ViewController.m */; };
+		955F141A22D7850300DEC2E0 /* Page0ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F141122D7850300DEC2E0 /* Page0ViewController.m */; };
+		955F141B22D7850300DEC2E0 /* Page2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F141422D7850300DEC2E0 /* Page2ViewController.m */; };
+		955F141C22D7850300DEC2E0 /* Page4ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F141622D7850300DEC2E0 /* Page4ViewController.m */; };
+		955F141D22D7850300DEC2E0 /* Page3ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F141822D7850300DEC2E0 /* Page3ViewController.m */; };
 		A7FA2B0D2185600900439166 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B0C2185600900439166 /* AppDelegate.m */; };
 		A7FA2B102185600900439166 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B0F2185600900439166 /* ViewController.m */; };
 		A7FA2B152185600900439166 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7FA2B142185600900439166 /* Assets.xcassets */; };
 		A7FA2B1B2185600900439166 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B1A2185600900439166 /* main.m */; };
-		A7FA2B232185603F00439166 /* ColorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B212185603F00439166 /* ColorViewController.m */; };
-		A7FA2B29218560C000439166 /* UIView+HeeeQuickFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B25218560C000439166 /* UIView+HeeeQuickFrame.m */; };
-		A7FA2B2A218560C000439166 /* HeeeScrollPageIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B27218560C000439166 /* HeeeScrollPageIndicator.m */; };
-		A7FA2B2D218560DE00439166 /* HeeeScrollPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B2C218560DE00439166 /* HeeeScrollPageView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		955F140822D784E400DEC2E0 /* HeeeScrollPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageView.m; sourceTree = "<group>"; };
+		955F140922D784E400DEC2E0 /* HeeeScrollPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageView.h; sourceTree = "<group>"; };
+		955F140A22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageHeaderView.m; sourceTree = "<group>"; };
+		955F140B22D784E400DEC2E0 /* HeeeScrollPageHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageHeaderView.h; sourceTree = "<group>"; };
+		955F140F22D7850300DEC2E0 /* Page2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page2ViewController.h; sourceTree = "<group>"; };
+		955F141022D7850300DEC2E0 /* Page1ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page1ViewController.m; sourceTree = "<group>"; };
+		955F141122D7850300DEC2E0 /* Page0ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page0ViewController.m; sourceTree = "<group>"; };
+		955F141222D7850300DEC2E0 /* Page4ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page4ViewController.h; sourceTree = "<group>"; };
+		955F141322D7850300DEC2E0 /* Page3ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page3ViewController.h; sourceTree = "<group>"; };
+		955F141422D7850300DEC2E0 /* Page2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page2ViewController.m; sourceTree = "<group>"; };
+		955F141522D7850300DEC2E0 /* Page1ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page1ViewController.h; sourceTree = "<group>"; };
+		955F141622D7850300DEC2E0 /* Page4ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page4ViewController.m; sourceTree = "<group>"; };
+		955F141722D7850300DEC2E0 /* Page0ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page0ViewController.h; sourceTree = "<group>"; };
+		955F141822D7850300DEC2E0 /* Page3ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page3ViewController.m; sourceTree = "<group>"; };
 		A7FA2B082185600900439166 /* HeeeScrollPageView-demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HeeeScrollPageView-demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7FA2B0B2185600900439166 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A7FA2B0C2185600900439166 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -26,14 +43,6 @@
 		A7FA2B142185600900439166 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7FA2B192185600900439166 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A7FA2B1A2185600900439166 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		A7FA2B212185603F00439166 /* ColorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorViewController.m; sourceTree = "<group>"; };
-		A7FA2B222185603F00439166 /* ColorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorViewController.h; sourceTree = "<group>"; };
-		A7FA2B25218560C000439166 /* UIView+HeeeQuickFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+HeeeQuickFrame.m"; sourceTree = "<group>"; };
-		A7FA2B26218560C000439166 /* HeeeScrollPageIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageIndicator.h; sourceTree = "<group>"; };
-		A7FA2B27218560C000439166 /* HeeeScrollPageIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageIndicator.m; sourceTree = "<group>"; };
-		A7FA2B28218560C000439166 /* UIView+HeeeQuickFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+HeeeQuickFrame.h"; sourceTree = "<group>"; };
-		A7FA2B2B218560DE00439166 /* HeeeScrollPageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageView.h; sourceTree = "<group>"; };
-		A7FA2B2C218560DE00439166 /* HeeeScrollPageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +56,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		955F140E22D7850300DEC2E0 /* PageVC */ = {
+			isa = PBXGroup;
+			children = (
+				955F141722D7850300DEC2E0 /* Page0ViewController.h */,
+				955F141122D7850300DEC2E0 /* Page0ViewController.m */,
+				955F141522D7850300DEC2E0 /* Page1ViewController.h */,
+				955F141022D7850300DEC2E0 /* Page1ViewController.m */,
+				955F140F22D7850300DEC2E0 /* Page2ViewController.h */,
+				955F141422D7850300DEC2E0 /* Page2ViewController.m */,
+				955F141322D7850300DEC2E0 /* Page3ViewController.h */,
+				955F141822D7850300DEC2E0 /* Page3ViewController.m */,
+				955F141222D7850300DEC2E0 /* Page4ViewController.h */,
+				955F141622D7850300DEC2E0 /* Page4ViewController.m */,
+			);
+			path = PageVC;
+			sourceTree = "<group>";
+		};
 		A7FA2AFF2185600900439166 = {
 			isa = PBXGroup;
 			children = (
@@ -70,8 +96,7 @@
 				A7FA2B0C2185600900439166 /* AppDelegate.m */,
 				A7FA2B0E2185600900439166 /* ViewController.h */,
 				A7FA2B0F2185600900439166 /* ViewController.m */,
-				A7FA2B222185603F00439166 /* ColorViewController.h */,
-				A7FA2B212185603F00439166 /* ColorViewController.m */,
+				955F140E22D7850300DEC2E0 /* PageVC */,
 				A7FA2B24218560AD00439166 /* HeeeScrollPageView */,
 				A7FA2B142185600900439166 /* Assets.xcassets */,
 				A7FA2B192185600900439166 /* Info.plist */,
@@ -83,12 +108,10 @@
 		A7FA2B24218560AD00439166 /* HeeeScrollPageView */ = {
 			isa = PBXGroup;
 			children = (
-				A7FA2B2B218560DE00439166 /* HeeeScrollPageView.h */,
-				A7FA2B2C218560DE00439166 /* HeeeScrollPageView.m */,
-				A7FA2B26218560C000439166 /* HeeeScrollPageIndicator.h */,
-				A7FA2B27218560C000439166 /* HeeeScrollPageIndicator.m */,
-				A7FA2B28218560C000439166 /* UIView+HeeeQuickFrame.h */,
-				A7FA2B25218560C000439166 /* UIView+HeeeQuickFrame.m */,
+				955F140922D784E400DEC2E0 /* HeeeScrollPageView.h */,
+				955F140822D784E400DEC2E0 /* HeeeScrollPageView.m */,
+				955F140B22D784E400DEC2E0 /* HeeeScrollPageHeaderView.h */,
+				955F140A22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m */,
 			);
 			path = HeeeScrollPageView;
 			sourceTree = "<group>";
@@ -161,13 +184,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A7FA2B2A218560C000439166 /* HeeeScrollPageIndicator.m in Sources */,
 				A7FA2B102185600900439166 /* ViewController.m in Sources */,
-				A7FA2B29218560C000439166 /* UIView+HeeeQuickFrame.m in Sources */,
-				A7FA2B2D218560DE00439166 /* HeeeScrollPageView.m in Sources */,
+				955F141A22D7850300DEC2E0 /* Page0ViewController.m in Sources */,
+				955F140C22D784E400DEC2E0 /* HeeeScrollPageView.m in Sources */,
+				955F141D22D7850300DEC2E0 /* Page3ViewController.m in Sources */,
+				955F141C22D7850300DEC2E0 /* Page4ViewController.m in Sources */,
 				A7FA2B1B2185600900439166 /* main.m in Sources */,
-				A7FA2B232185603F00439166 /* ColorViewController.m in Sources */,
+				955F140D22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m in Sources */,
 				A7FA2B0D2185600900439166 /* AppDelegate.m in Sources */,
+				955F141B22D7850300DEC2E0 /* Page2ViewController.m in Sources */,
+				955F141922D7850300DEC2E0 /* Page1ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,16 +316,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 27HH8LNC45;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 3L79MU6X59;
 				INFOPLIST_FILE = "HeeeScrollPageView-demo/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = www.Heee.cessssss;
+				PRODUCT_BUNDLE_IDENTIFIER = www.Heee.cesss;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = test;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -308,16 +335,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 27HH8LNC45;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 3L79MU6X59;
 				INFOPLIST_FILE = "HeeeScrollPageView-demo/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = www.Heee.cessssss;
+				PRODUCT_BUNDLE_IDENTIFIER = www.Heee.cesss;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = test;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

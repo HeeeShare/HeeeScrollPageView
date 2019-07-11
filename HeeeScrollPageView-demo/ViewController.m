@@ -8,9 +8,14 @@
 
 #import "ViewController.h"
 #import "HeeeScrollPageView.h"
-#import "ColorViewController.h"
+#import "Page0ViewController.h"
+#import "Page1ViewController.h"
+#import "Page2ViewController.h"
+#import "Page3ViewController.h"
+#import "Page4ViewController.h"
 
 @interface ViewController ()
+@property (nonatomic,strong) HeeeScrollPageView *scrollPageView;
 
 @end
 
@@ -18,47 +23,31 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor lightGrayColor];
     
-    NSMutableArray *vcArr = [NSMutableArray array];
-    for (NSUInteger i = 0; i < 6; i++) {
-        ColorViewController *vc = [ColorViewController new];
-        
-        if (i == 0) {
-            vc.color = [UIColor redColor];
-            vc.title = @"red";
-        }
-        
-        if (i == 1) {
-            vc.color = [UIColor yellowColor];
-            vc.title = @"yellow";
-        }
-        
-        if (i == 2) {
-            vc.color = [UIColor greenColor];
-            vc.title = @"green";
-        }
-        
-        if (i == 3) {
-            vc.color = [UIColor blueColor];
-            vc.title = @"blue";
-        }
-        
-        if (i == 4) {
-            vc.color = [UIColor cyanColor];
-            vc.title = @"cyan";
-        }
-        
-        if (i == 5) {
-            vc.color = [UIColor orangeColor];
-            vc.title = @"orange";
-        }
-        
-        [vcArr addObject:vc];
+    Page0ViewController *page0 = [Page0ViewController new];
+    Page1ViewController *page1 = [Page1ViewController new];
+    Page2ViewController *page2 = [Page2ViewController new];
+    Page3ViewController *page3 = [Page3ViewController new];
+    Page4ViewController *page4 = [Page4ViewController new];
+    self.scrollPageView.pageVCArray = @[page0,page1,page2,page3,page4];
+    [self.view addSubview:self.scrollPageView];
+}
+
+- (HeeeScrollPageView *)scrollPageView {
+    if (!_scrollPageView) {
+        _scrollPageView = [[HeeeScrollPageView alloc] initWithFrame:CGRectMake(30, 80, 260, 500)];
+        _scrollPageView.headerBackgroundColor = [UIColor cyanColor];
+        _scrollPageView.headerViewHeight = 38;
+        _scrollPageView.titleNormalColor = [UIColor colorWithWhite:0.4 alpha:1.0];
+        _scrollPageView.titleSelectedColor = [UIColor colorWithWhite:0.2 alpha:1.0];
+        _scrollPageView.titleZoomScale = 1.2;
+        _scrollPageView.titleFontSize = 18;
+        _scrollPageView.indicatorHeight = 2.0;
+        _scrollPageView.indicatorColor = [UIColor redColor];
+        _scrollPageView.strokeWidth = -2;
     }
     
-    HeeeScrollPageView *pageView = [[HeeeScrollPageView alloc] initWithFrame:CGRectMake(20, 60, 280, 500) childVC:vcArr andIndicatorHeight:36];
-    [self.view addSubview:pageView];
+    return _scrollPageView;
 }
 
 @end

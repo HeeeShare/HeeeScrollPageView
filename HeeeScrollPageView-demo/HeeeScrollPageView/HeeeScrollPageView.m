@@ -1,98 +1,143 @@
 //
 //  HeeeScrollPageView.m
-//  HeeeScrollPageView-demo
+//  ceshi010
 //
-//  Created by hgy on 2018/10/28.
-//  Copyright © 2018 hgy. All rights reserved.
+//  Created by Heee on 2019/7/7.
+//  Copyright © 2019 WeInsight. All rights reserved.
 //
 
 #import "HeeeScrollPageView.h"
-#import "HeeeScrollPageIndicator.h"
-#import "UIView+HeeeQuickFrame.h"
+#import "HeeeScrollPageHeaderView.h"
 
-@interface HeeeScrollPageView()<UIScrollViewDelegate>
+@interface HeeeScrollPageView ()<UIScrollViewDelegate>
 @property (nonatomic,  weak) UIViewController *parentVC;
-@property (nonatomic,strong) NSMutableArray <UIViewController *>*childVCArr;
+@property (nonatomic,strong) HeeeScrollPageHeaderView *headerView;
 @property (nonatomic,strong) UIScrollView *scrollView;
-@property (nonatomic,assign) CGFloat width;
-@property (nonatomic,assign) NSUInteger willAppearIndex;
-@property (nonatomic,assign) NSUInteger didAppearIndex;
-@property (nonatomic,assign) NSUInteger willDisappearIndex;
-@property (nonatomic,strong) NSMutableArray *loadVCArray;
-@property (nonatomic,strong) NSMutableArray *appearVCArray;
-@property (nonatomic,strong) UIViewController *NEWVC;
-@property (nonatomic,strong) HeeeScrollPageIndicator *pageIndicator;
-@property (nonatomic,assign) BOOL clickFlag;
-@property (nonatomic,assign) NSUInteger clickIndex;
-@property (nonatomic,assign) BOOL addRemoveTitleFlag;
-@property (nonatomic,assign) BOOL insideContentSizeFlag;
-@property (nonatomic,assign) BOOL clickTitleAnimate;
-@property (nonatomic,strong) NSTimer *timer;
+@property (nonatomic,strong) CADisplayLink *displayLink;
+@property (nonatomic,strong) NSMutableArray *didAddVCArray;
+@property (nonatomic,assign) CGFloat offset;
+@property (nonatomic,assign) int currentPage;
 
 @end
 
 @implementation HeeeScrollPageView
-- (instancetype)initWithFrame:(CGRect)frame childVC:(NSArray<UIViewController *> *)childVCArr andIndicatorHeight:(CGFloat)indicatorHeight{
-    self = [super initWithFrame:frame];
+- (instancetype)init
+{
+    self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
-        _childVCArr = [childVCArr mutableCopy];
-        _width = frame.size.width;
-        _loadVCArray = [NSMutableArray array];
-        _appearVCArray = [NSMutableArray array];
-        
-        NSMutableArray *titleArr = [NSMutableArray array];
-        for (NSUInteger i = 0; i < _childVCArr.count; i++) {
-            UIViewController *vc = _childVCArr[i];
-            if (vc.title && vc.title.length > 0) {
-                [titleArr addObject:vc.title];
-            }else{
-                [titleArr addObject:@"    "];
-            }
-        }
-        
-        _pageIndicator = [[HeeeScrollPageIndicator alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, indicatorHeight) AndTitle:titleArr];
-        __weak typeof(self) weakSelf = self;
-        _pageIndicator.showPage = ^(NSUInteger index) {
-            weakSelf.clickFlag = YES;
-            weakSelf.clickIndex = index;
-            
-            weakSelf.clickTitleAnimate = NO;
-            if (weakSelf.didAppearIndex - index == 1 || weakSelf.didAppearIndex - index == -1) {
-                weakSelf.clickTitleAnimate = YES;
-            }
-            
-            [weakSelf.scrollView setContentOffset:CGPointMake(weakSelf.bounds.size.width*index, 0) animated:weakSelf.clickTitleAnimate];
-        };
-        [self addSubview:_pageIndicator];
-        
-        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, _pageIndicator.heee_bottom, self.frame.size.width, self.frame.size.height - _pageIndicator.heee_bottom)];
-        _scrollView.pagingEnabled = YES;
-        _scrollView.delegate = self;
-        _scrollView.showsHorizontalScrollIndicator = NO;
-        _scrollView.showsVerticalScrollIndicator = NO;
-        [self addSubview:_scrollView];
-        
-        _timer = [NSTimer scheduledTimerWithTimeInterval:1.0/60 target:self selector:@selector(findViewController) userInfo:nil repeats:YES];
+        [self p_setupInterface];
     }
     
     return self;
 }
 
-- (void)findViewController {
-    _parentVC = [self viewController];
-    if (_parentVC) {
-        [_timer invalidate];
-        _timer = nil;
-        
-        if (_childVCArr.count > 0) {
-            _scrollView.contentSize = CGSizeMake(_width*_childVCArr.count, 0);
-            [self addChildVCIndex:0];
-        }
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self p_setupInterface];
+    }
+    return self;
+}
+
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    
+    if (self.pageVCArray.count > 0 && self.scrollView.subviews.count == 0) {
+        [self setPageVCArray:self.pageVCArray];
+    }
+}
+- (void)setPageVCArray:(NSArray<UIViewController *> *)pageVCArray {
+    _pageVCArray = pageVCArray;
+    
+    if (self.frame.size.width > 0) {
+        [self p_setupHomeTopView];
+        [self p_setupScrollView];
+        [self p_addChildVC:0];
     }
 }
 
-- (UIViewController *)viewController {
+#pragma mark - private
+- (void)p_setupInterface {
+    self.headerBackgroundColor = [UIColor whiteColor];
+    self.titleNormalColor = [UIColor lightGrayColor];
+    self.titleSelectedColor = [UIColor blackColor];
+    self.headerViewHeight = 36;
+    self.titleZoomScale = 1.0;
+    self.titleFontSize = 16;
+    self.indicatorHeight = 1.0;
+    self.indicatorColor = [UIColor blueColor];
+    self.titleBottomViewLineColor = [UIColor colorWithWhite:0.95 alpha:1.0];
+    self.titleBottomViewLineHeight = 1.0;
+    self.titleGap = 20;
+    
+    [self p_setupDisplayLink];
+    [self addSubview:self.headerView];
+    [self addSubview:self.scrollView];
+}
+
+- (void)p_setupDisplayLink {
+    if (!_displayLink) {
+        _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(p_findViewController)];
+        _displayLink.paused = NO;
+        [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    }
+}
+
+- (void)p_addChildVC:(NSUInteger)index {
+    if (self.parentVC && index < self.pageVCArray.count) {
+        UIViewController *childVC = self.pageVCArray[index];
+        if (![self.didAddVCArray containsObject:childVC]) {
+            [self.parentVC addChildViewController:childVC];
+            [self.didAddVCArray addObject:childVC];
+        }
+        
+        [self.scrollView addSubview:childVC.view];
+        childVC.view.frame = CGRectMake(index*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.bounds.size.height);
+    }
+}
+
+- (void)p_setupScrollView {
+    self.scrollView.frame = CGRectMake(0, self.headerViewHeight, self.bounds.size.width, self.bounds.size.height - self.headerViewHeight);
+    self.scrollView.contentSize = CGSizeMake(self.bounds.size.width*self.pageVCArray.count, 0);
+}
+
+- (void)p_setupHomeTopView {
+    self.headerView.frame = CGRectMake(0, 0, self.bounds.size.width, self.headerViewHeight);
+    self.headerView.backgroundColor = self.headerBackgroundColor;
+    self.headerView.spaceAround = self.spaceAround;
+    self.headerView.titleNormalColor = self.titleNormalColor;
+    self.headerView.titleSelectedColor = self.titleSelectedColor;
+    self.headerView.titleZoomScale = self.titleZoomScale;
+    self.headerView.titleFontSize = self.titleFontSize;
+    self.headerView.titleGap = self.titleGap;
+    self.headerView.indicatorHeight = self.indicatorHeight;
+    self.headerView.indicatorColor = self.indicatorColor;
+    self.headerView.indicatorBottomOffset = self.indicatorBottomOffset;
+    self.headerView.strokeWidth = self.strokeWidth;
+    self.headerView.titleBottomViewLineColor = self.titleBottomViewLineColor;
+    self.headerView.titleBottomViewLineHeight = self.titleBottomViewLineHeight;
+    self.headerView.titleBottomViewLineHorizonalMargin = self.titleBottomViewLineHorizonalMargin;
+    
+    NSMutableArray *titles = [NSMutableArray array];
+    for (UIViewController *vc in self.pageVCArray) {
+        [titles addObject:vc.title?vc.title:@""];
+    }
+    
+    self.headerView.titles = titles;
+}
+
+- (void)p_findViewController {
+    self.parentVC = [self p_viewController];
+    if (self.parentVC) {
+        [_displayLink invalidate];
+        _displayLink = nil;
+        
+        [self p_addChildVC:0];
+    }
+}
+
+- (UIViewController *)p_viewController {
     UIView *next = self;
     while ((next = [next superview])) {
         UIResponder *nextResponder = [next nextResponder];
@@ -104,377 +149,67 @@
     return nil;
 }
 
-- (void)removeFromSuperview {
-    [super removeFromSuperview];
-    if (_timer) {
-        [_timer invalidate];
-        _timer = nil;
-    }
-}
-
-- (void)addChildVCIndex:(NSUInteger)index {
-    UIViewController *childVC = _childVCArr[index];
-    childVC.view.frame = CGRectMake(index*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.heee_height);
-    
-    //如果两次执行viewDidLoad给你带来不便，可以删除这两行代码，只是需要你自己注意childVC.view.bounds
-    [childVC.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    [childVC viewDidLoad];
-    
-    _NEWVC = childVC;
-    [_parentVC addChildViewController:childVC];
-    [_scrollView addSubview:childVC.view];
-    [_loadVCArray addObject:childVC];
-    [_appearVCArray addObject:childVC];
-}
-
-- (void)addChildVC:(UIViewController *)childVC toIndex:(NSUInteger)index {
-    if (childVC) {
-        if (index < 0) {
-            index = 0;
-        }else if (index > _childVCArr.count) {
-            index = _childVCArr.count;
-        }
-        
-        _addRemoveTitleFlag = YES;
-        [_childVCArr insertObject:childVC atIndex:index];
-        
-        for (NSUInteger i = 0; i < _loadVCArray.count; i++) {
-            UIViewController *loadVC = _loadVCArray[i];
-            if ([_childVCArr indexOfObject:loadVC] > index) {
-                loadVC.view.heee_right+=_width;
-            }
-        }
-        
-        [_pageIndicator addTitle:childVC.title toIndex:index];
-        _scrollView.contentSize = CGSizeMake(_width*_childVCArr.count, 0);
-        
-        if (index <= _didAppearIndex) {
-            _didAppearIndex++;
-            _willAppearIndex++;
-            
-            [_scrollView setContentOffset:CGPointMake(_scrollView.contentOffset.x+_width, 0) animated:NO];
-        }
-        
-        if (_didAppearIndex != index) {
-            if (_willAppearIndex == index || _willDisappearIndex == index) {
-                [self addChildVCIndex:index];
-            }
-        }
-    }
-}
-
-- (void)removeChildVC:(NSUInteger)index {
-    if (index >= 0 && index < _childVCArr.count) {
-        UIViewController *needRemoveVC = [_childVCArr objectAtIndex:index];
-        [_childVCArr removeObject:needRemoveVC];
-        
-        if ([_loadVCArray containsObject:needRemoveVC]) {
-            [_loadVCArray removeObject:needRemoveVC];
-        }
-        
-        [needRemoveVC.view removeFromSuperview];
-        
-        for (NSUInteger i = 0; i < _loadVCArray.count; i++) {
-            UIViewController *loadVC = _loadVCArray[i];
-            if ([_childVCArr indexOfObject:loadVC] >= index) {
-                loadVC.view.heee_right-=_width;
-            }
-        }
-        
-        [_pageIndicator removeTitle:index];
-        
-        BOOL flag = NO;
-        
-        if (_didAppearIndex > index) {
-            _didAppearIndex--;
-            flag = YES;
-        }
-        
-        if (_willAppearIndex > index) {
-            flag = YES;
-            _willAppearIndex--;
-        }
-        
-        if (flag) {
-            [_scrollView setContentOffset:CGPointMake(_scrollView.contentOffset.x - _width, 0) animated:NO];
-        }
-        
-        _scrollView.contentSize = CGSizeMake(_width*_childVCArr.count, 0);
-        
-        if (_didAppearIndex == index) {
-            UIViewController *didAppearVC = _childVCArr[index];
-            if (![_loadVCArray containsObject:didAppearVC]) {
-                [self addChildVCIndex:index];
-            }
-        }
-        
-        UIViewController *willAppearVC = _childVCArr[_willAppearIndex];
-        if (![_loadVCArray containsObject:willAppearVC]) {
-            [self addChildVCIndex:_willAppearIndex];
-        }
-    }
-}
-
-- (void)setTitleGap:(CGFloat)titleGap {
-    _titleGap = titleGap;
-    _pageIndicator.titleGap = titleGap;
-}
-
-- (void)setTitleFont:(UIFont *)titleFont {
-    _titleFont = titleFont;
-    _pageIndicator.titleFont = titleFont;
-}
-
-- (void)setLineHeight:(CGFloat)lineHeight {
-    _lineHeight = lineHeight;
-    _pageIndicator.lineHeight = lineHeight;
-}
-
-- (void)setLineGap:(CGFloat)lineGap {
-    _lineGap = lineGap;
-    _pageIndicator.lineGap = lineGap;
-}
-
-- (void)setNormalColor:(UIColor *)normalColor {
-    _normalColor = normalColor;
-    _pageIndicator.normalColor = normalColor;
-}
-
-- (void)setHighlightColor:(UIColor *)highlightColor {
-    _highlightColor = highlightColor;
-    _pageIndicator.highlightColor = highlightColor;
-}
-
-- (void)setIndicatorBGColor:(UIColor *)indicatorBGColor {
-    _indicatorBGColor = indicatorBGColor;
-    _pageIndicator.backgroundColor = indicatorBGColor;
-}
-
-- (void)setLineOffsetY:(CGFloat)lineOffsetY {
-    _lineOffsetY = lineOffsetY;
-    _pageIndicator.lineOffsetY = lineOffsetY;
-}
-
-- (void)setTitleOffsetY:(CGFloat)titleOffsetY {
-    _titleOffsetY = titleOffsetY;
-    _pageIndicator.titleOffsetY = titleOffsetY;
-}
-
-- (void)handleOffsetX:(CGFloat)offsetX {
-    for (NSUInteger i = 0; i < _childVCArr.count; i++) {
-        if (offsetX > i*_width && offsetX < (i+1)*_width) {
-            if (_willAppearIndex != i && _willDisappearIndex != i) {
-                _willAppearIndex = i;
-                _willDisappearIndex = i + 1;
-                UIViewController *willDisappearVC = _childVCArr[_willDisappearIndex];
-                [willDisappearVC viewWillDisappear:YES];
-                
-                UIViewController *willAppearVC = _childVCArr[_willAppearIndex];
-                if ([_loadVCArray containsObject:willAppearVC]) {
-                    if (_NEWVC != willAppearVC) {
-                        [willAppearVC viewWillAppear:YES];
-                        if (![_appearVCArray containsObject:willAppearVC]) {
-                            [_appearVCArray addObject:willAppearVC];
-                        }
-                    }
-                }else{
-                    [self addChildVCIndex:i];
-                }
-            }
-            
-            if (_willAppearIndex != i + 1  && _willDisappearIndex != i + 1) {
-                _willAppearIndex = i + 1;
-                _willDisappearIndex = i;
-                UIViewController *willDisappearVC = _childVCArr[_willDisappearIndex];
-                [willDisappearVC viewWillDisappear:YES];
-                
-                UIViewController *willAppearVC = _childVCArr[_willAppearIndex];
-                if ([_loadVCArray containsObject:willAppearVC]) {
-                    if (_NEWVC != willAppearVC) {
-                        [willAppearVC viewWillAppear:YES];
-                        if (![_appearVCArray containsObject:willAppearVC]) {
-                            [_appearVCArray addObject:willAppearVC];
-                        }
-                    }
-                }else{
-                    [self addChildVCIndex:i + 1];
-                }
-            }
-        }
-    }
-}
-
-
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSUInteger totalPage = _childVCArr.count;
     CGFloat offsetX = scrollView.contentOffset.x;
-    NSUInteger page = scrollView.contentOffset.x/_width;
+    self.headerView.scrollViewOffsetX = offsetX;
     
-    if (offsetX >= 0 && offsetX <= totalPage*_width) {
-        _pageIndicator.offsetX = offsetX;
-    }
-    
-    if (_clickFlag) {
-        if (_clickTitleAnimate) {
-            [self handleOffsetX:offsetX];
+    int pageNumber = offsetX/scrollView.bounds.size.width;
+    if (offsetX - pageNumber*scrollView.bounds.size.width == 0) {
+        self.currentPage = pageNumber;
+        
+        UIViewController *vc = self.pageVCArray[pageNumber];
+        if (scrollView.subviews.count < 2) {
+            [self p_addChildVC:pageNumber];
         }
         
-        if (offsetX - page*_width == 0 && page == _clickIndex) {
-            _clickFlag = NO;
-            _addRemoveTitleFlag = NO;
-            
-            if (!_clickTitleAnimate) {
-                UIViewController *willDisappearVC = _childVCArr[_didAppearIndex];
-                [willDisappearVC viewWillDisappear:_clickTitleAnimate];
-                
-                UIViewController *willAppearVC = _childVCArr[page];
-                if ([_loadVCArray containsObject:willAppearVC]) {
-                    [willAppearVC viewWillAppear:_clickTitleAnimate];
-                }else{
-                    [self addChildVCIndex:page];
-                }
-            }
-            
-            [self scrollViewDidEndDecelerating:scrollView];
-        }
-        
-        return;
-    }
-    
-    if (_addRemoveTitleFlag) {
-        _clickFlag = NO;
-        _addRemoveTitleFlag = NO;
-        
-        if (!_clickTitleAnimate) {
-            UIViewController *willDisappearVC = _childVCArr[_didAppearIndex];
-            [willDisappearVC viewWillDisappear:NO];
-        }
-        
-        UIViewController *willAppearVC = _childVCArr[page];
-        if (![_loadVCArray containsObject:willAppearVC]) {
-            [self addChildVCIndex:page];
-        }
-        
-        [self scrollViewDidEndDecelerating:scrollView];
-        return;
-    }
-    
-    if (offsetX > 0 && offsetX < (totalPage - 1)*_width) {
-        if (_NEWVC) {
-            NSUInteger index = [_childVCArr indexOfObject:_NEWVC];
-            if (page == index) {
-                if (offsetX > (index + 1)*_width || offsetX < index*_width) {
-                    _NEWVC = nil;
-                }
-            }else{
-                if (offsetX > index*_width || offsetX < (index - 1)*_width) {
-                    _NEWVC = nil;
-                }
+        for (UIView *view in scrollView.subviews) {
+            if (view != vc.view) {
+                [view removeFromSuperview];
             }
         }
-        
-        _insideContentSizeFlag = YES;
-        
-        for (NSUInteger i = 0; i < _childVCArr.count; i++) {
-            if (offsetX > i*_width && offsetX < (i+1)*_width) {
-                if (_willAppearIndex != i && _willDisappearIndex != i) {
-                    _willAppearIndex = i;
-                    _willDisappearIndex = i + 1;
-                    UIViewController *willDisappearVC = _childVCArr[_willDisappearIndex];
-                    [willDisappearVC viewWillDisappear:YES];
-                    
-                    UIViewController *willAppearVC = _childVCArr[_willAppearIndex];
-                    if ([_loadVCArray containsObject:willAppearVC]) {
-                        if (_NEWVC != willAppearVC) {
-                            [willAppearVC viewWillAppear:YES];
-                            if (![_appearVCArray containsObject:willAppearVC]) {
-                                [_appearVCArray addObject:willAppearVC];
-                            }
-                        }
-                    }else{
-                        [self addChildVCIndex:i];
-                    }
-                }
-                
-                if (_willAppearIndex != i + 1  && _willDisappearIndex != i + 1) {
-                    _willAppearIndex = i + 1;
-                    _willDisappearIndex = i;
-                    UIViewController *willDisappearVC = _childVCArr[_willDisappearIndex];
-                    [willDisappearVC viewWillDisappear:YES];
-                    
-                    UIViewController *willAppearVC = _childVCArr[_willAppearIndex];
-                    if ([_loadVCArray containsObject:willAppearVC]) {
-                        if (_NEWVC != willAppearVC) {
-                            [willAppearVC viewWillAppear:YES];
-                            if (![_appearVCArray containsObject:willAppearVC]) {
-                                [_appearVCArray addObject:willAppearVC];
-                            }
-                        }
-                    }else{
-                        [self addChildVCIndex:i + 1];
-                    }
-                }
-            }
+    }else{
+        if ([scrollView.subviews containsObject:self.pageVCArray[pageNumber].view]) {
+            [self p_addChildVC:pageNumber + 1];
+        }else{
+            [self p_addChildVC:pageNumber];
         }
     }
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    NSUInteger page = scrollView.contentOffset.x/_width;
-    
-    if (scrollView.contentOffset.x >= 0 && scrollView.contentOffset.x <= (_childVCArr.count- 1)*_width) {
-        if (_didAppearIndex == 0 && page == 0  && _willAppearIndex == 0) {
-            [self clearShouldDisappearVC:_insideContentSizeFlag];
-            return;
-        }
-        
-        if (_didAppearIndex == self.childVCArr.count - 1 && page == self.childVCArr.count - 1 && _willAppearIndex == self.childVCArr.count - 1) {
-            [self clearShouldDisappearVC:_insideContentSizeFlag];
-            return;
-        }
-        
-        _willAppearIndex = page;
-        UIViewController *didAppearVC = _childVCArr[_willAppearIndex];
-        if (didAppearVC != _NEWVC) {
-            [didAppearVC viewDidAppear:YES];
-            if (![_appearVCArray containsObject:didAppearVC]) {
-                [_appearVCArray addObject:didAppearVC];
-            }
-        }
-        _didAppearIndex = _willAppearIndex;
-        
-        if (_willDisappearIndex != _willAppearIndex) {
-            UIViewController *didDisAppearVC = _childVCArr[_willDisappearIndex];
-            [didDisAppearVC viewDidDisappear:YES];
-            [_appearVCArray removeObject:didDisAppearVC];
-            _willDisappearIndex = _willAppearIndex;
-        }
-        
-        [self clearShouldDisappearVC:NO];
-        
-        _NEWVC = nil;
+#pragma mark - lazy
+- (HeeeScrollPageHeaderView *)headerView {
+    if (!_headerView) {
+        _headerView = [[HeeeScrollPageHeaderView alloc] init];
+        __weak typeof(self) weakSelf = self;
+        _headerView.shouldScrollToPage = ^(NSUInteger pageIndex, BOOL animate) {
+            [weakSelf.scrollView setContentOffset:CGPointMake(pageIndex*weakSelf.scrollView.bounds.size.width, 0) animated:animate];
+        };
     }
+    
+    return _headerView;
 }
 
-- (void)clearShouldDisappearVC:(BOOL)flag {
-    NSMutableArray *temArr = [NSMutableArray array];
-    UIViewController *didAppearVC = _childVCArr[_didAppearIndex];
-    
-    for (NSUInteger i = 0; i < _appearVCArray.count; i++) {
-        UIViewController *shouldDisappearVC = _appearVCArray[i];
-        if (shouldDisappearVC != didAppearVC) {
-            [shouldDisappearVC viewDidDisappear:NO];
-            [temArr addObject:shouldDisappearVC];
-        }
+- (UIScrollView *)scrollView {
+    if (!_scrollView) {
+        _scrollView = [[UIScrollView alloc] init];
+        _scrollView.clipsToBounds = YES;
+        _scrollView.pagingEnabled = YES;
+        _scrollView.delegate = self;
+        _scrollView.showsVerticalScrollIndicator = NO;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        _scrollView.bounces = NO;
     }
     
-    if (flag) {
-        [didAppearVC viewDidAppear:YES];
+    return _scrollView;
+}
+
+- (NSMutableArray *)didAddVCArray {
+    if (!_didAddVCArray) {
+        _didAddVCArray = [NSMutableArray array];
     }
     
-    _insideContentSizeFlag = NO;
-    [_appearVCArray removeObjectsInArray:temArr];
+    return _didAddVCArray;
 }
 
 @end
