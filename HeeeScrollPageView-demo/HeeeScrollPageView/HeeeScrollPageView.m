@@ -159,9 +159,7 @@
         self.currentPage = pageNumber;
         
         UIViewController *vc = self.pageVCArray[pageNumber];
-        if (scrollView.subviews.count < 2) {
-            [self p_addChildVC:pageNumber];
-        }
+        [self p_addChildVC:pageNumber];
         
         for (UIView *view in scrollView.subviews) {
             if (view != vc.view) {
