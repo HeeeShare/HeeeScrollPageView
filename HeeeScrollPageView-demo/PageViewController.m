@@ -1,27 +1,19 @@
 //
-//  Page3ViewController.m
-//  ceshi010
+//  PageViewController.m
+//  HeeeScrollPageView-demo
 //
-//  Created by Heee on 2019/7/9.
-//  Copyright © 2019 WeInsight. All rights reserved.
+//  Created by Heee on 2019/12/17.
+//  Copyright © 2019 hgy. All rights reserved.
 //
 
-#import "Page3ViewController.h"
-@interface Page3ViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import "PageViewController.h"
+
+@interface PageViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong) UITableView *tableView;
 
 @end
 
-@implementation Page3ViewController
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        self.title = @"page3";
-    }
-    return self;
-}
+@implementation PageViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
