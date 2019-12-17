@@ -114,7 +114,8 @@
     self.headerView.indicatorHeight = self.indicatorHeight;
     self.headerView.indicatorColor = self.indicatorColor;
     self.headerView.indicatorBottomOffset = self.indicatorBottomOffset;
-    self.headerView.strokeWidth = self.strokeWidth;
+    self.headerView.selectTitleStrokeWidth = self.selectTitleStrokeWidth;
+    self.headerView.normalTitleStrokeWidth = self.normalTitleStrokeWidth;
     self.headerView.titleBottomViewLineColor = self.titleBottomViewLineColor;
     self.headerView.titleBottomViewLineHeight = self.titleBottomViewLineHeight;
     self.headerView.titleBottomViewLineHorizonalMargin = self.titleBottomViewLineHorizonalMargin;

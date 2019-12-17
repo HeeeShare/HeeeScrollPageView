@@ -39,10 +39,10 @@
         _scrollPageView.titleNormalColor = [UIColor lightGrayColor];
         _scrollPageView.titleSelectedColor = [UIColor blackColor];
         _scrollPageView.titleZoomScale = 1.4;
-        _scrollPageView.titleFontSize = 28;
+        _scrollPageView.titleFontSize = 24;
         _scrollPageView.indicatorHeight = 2.0;
         _scrollPageView.indicatorColor = [UIColor redColor];
-        _scrollPageView.strokeWidth = -2;
+        _scrollPageView.selectTitleStrokeWidth = -4;
         
         _scrollPageView.layer.borderWidth = 0.5;
         _scrollPageView.layer.borderColor = [UIColor darkGrayColor].CGColor;

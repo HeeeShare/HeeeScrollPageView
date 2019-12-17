@@ -68,13 +68,13 @@
             attri = @{
                       NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:self.titleSelectedColor,
-                      NSStrokeWidthAttributeName:@(self.strokeWidth),
+                      NSStrokeWidthAttributeName:@(self.selectTitleStrokeWidth),
                       };
         }else{
             attri = @{
                       NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:self.titleNormalColor,
-                      NSStrokeWidthAttributeName:@(0),
+                      NSStrokeWidthAttributeName:@(self.normalTitleStrokeWidth),
                       };
             label.transform = CGAffineTransformMakeScale(1.0/self.titleZoomScale, 1.0/self.titleZoomScale);
         }
@@ -223,7 +223,7 @@
             attri = @{
                       NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:[self changeColorWithRate:rate andIsFirstLabel:YES],
-                      NSStrokeWidthAttributeName:@(self.strokeWidth*(1 - rate)),
+                      NSStrokeWidthAttributeName:@(self.normalTitleStrokeWidth + (self.selectTitleStrokeWidth - self.normalTitleStrokeWidth)*(1 - rate)),
                       };
             CGFloat zoomScale = 1.0/self.titleZoomScale + (self.currentZoomScale - 1.0/self.titleZoomScale)*(1 - rate);
             label.transform = CGAffineTransformMakeScale(zoomScale,zoomScale);
@@ -231,7 +231,7 @@
             attri = @{
                       NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:[self changeColorWithRate:rate andIsFirstLabel:NO],
-                      NSStrokeWidthAttributeName:@(self.strokeWidth*rate),
+                      NSStrokeWidthAttributeName:@(self.selectTitleStrokeWidth - (self.selectTitleStrokeWidth - self.normalTitleStrokeWidth)*(1 - rate)),
                       };
             CGFloat zoomScale = 1.0/self.titleZoomScale + (self.currentZoomScale - 1.0/self.titleZoomScale)*rate;
             label.transform = CGAffineTransformMakeScale(zoomScale,zoomScale);
@@ -239,7 +239,7 @@
             attri = @{
                       NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:self.titleNormalColor,
-                      NSStrokeWidthAttributeName:@(0),
+                      NSStrokeWidthAttributeName:@(self.normalTitleStrokeWidth),
                       };
             label.transform = CGAffineTransformMakeScale(1.0/self.titleZoomScale, 1.0/self.titleZoomScale);
         }
