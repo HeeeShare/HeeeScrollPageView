@@ -46,7 +46,6 @@
 @property (nonatomic,assign) CGFloat titleBottomLineHeight;
 @property (nonatomic,assign) CGFloat titleBottomLineMargin;//左右两边的间距
 @property (nonatomic,assign) CGFloat strokeWidth;//选中标题的字宽，默认0，表示不加宽。建议加宽范围(-1~-4)
-@property (nonatomic,assign) BOOL showRightMask;//标题栏右侧渐变蒙层，颜色与标题栏背景色一致。
 @property (nonatomic,assign) CGFloat titleRightGap;//标题栏右侧多余空隙
 
 @property (nonatomic,strong,readonly) HeeeScrollPageTitleView *titleView;

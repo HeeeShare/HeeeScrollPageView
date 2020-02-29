@@ -199,7 +199,6 @@
     self.titleView.titleBottomLineColor = self.titleBottomLineColor;
     self.titleView.titleBottomLineMargin = self.titleBottomLineMargin;
     self.titleView.strokeWidth = self.strokeWidth;
-    self.titleView.showRightMask = self.showRightMask;
     self.titleView.titleRightGap = self.titleRightGap;
     self.titleView.frame = CGRectMake(0, 0, self.bounds.size.width, self.titleMaxHeight);
     

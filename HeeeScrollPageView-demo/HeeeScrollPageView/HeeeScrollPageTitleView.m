@@ -15,7 +15,6 @@
 @property (nonatomic,strong) UIView *indicatorView;
 @property (nonatomic,assign) CGFloat currentZoomScale;
 @property (nonatomic,strong) UIView *bottomLine;
-@property (nonatomic,strong) UIView *rightMaskView;
 
 @end
 
@@ -81,10 +80,6 @@
         [self.scrollView addSubview:label];
         [self.labelArray addObject:label];
     }];
-    
-    if (self.showRightMask) {
-        [self addSubview:self.rightMaskView];
-    }
     
     [self handleOffset:0];
 }
@@ -271,10 +266,6 @@
         CGFloat zoomScale = 1.0/self.titleZoomScale;
         
         if (label == firstLabel) {
-            if (label == self.labelArray.lastObject) {
-                self.rightMaskView.alpha = 1 - rate;
-            }
-            
             attri = @{
                       NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:[self p_changeColorWithRate:rate andIsFirstLabel:YES],
@@ -282,10 +273,6 @@
                       };
             zoomScale = 1.0/self.titleZoomScale + (self.currentZoomScale - 1.0/self.titleZoomScale)*(1 - rate);
         }else if (label == secondLabel){
-            if (label == self.labelArray.lastObject) {
-                self.rightMaskView.alpha = 1 - rate;
-            }
-            
             attri = @{
                       NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:[self p_changeColorWithRate:rate andIsFirstLabel:NO],
@@ -351,24 +338,6 @@
     }
     
     return _bottomLine;
-}
-
-- (UIView *)rightMaskView {
-    if (!_rightMaskView) {
-        _rightMaskView = [[UIView alloc] initWithFrame:CGRectMake(self.bounds.size.width - 36, 0, 36, self.bounds.size.height)];
-        _rightMaskView.userInteractionEnabled = NO;
-        
-        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-        gradientLayer.colors = @[(__bridge id)[self.backgroundColor colorWithAlphaComponent:0].CGColor,
-                                 (__bridge id)[self.backgroundColor colorWithAlphaComponent:1.0].CGColor];
-        gradientLayer.locations = @[@0.0,@0.9];
-        gradientLayer.startPoint = CGPointMake(0, 0);
-        gradientLayer.endPoint = CGPointMake(1.0, 0);
-        gradientLayer.frame = _rightMaskView.bounds;
-        [_rightMaskView.layer addSublayer:gradientLayer];
-    }
-    
-    return _rightMaskView;
 }
 
 @end

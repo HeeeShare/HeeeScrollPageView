@@ -31,7 +31,6 @@
 @property (nonatomic,assign) CGFloat titleBottomLineHeight;
 @property (nonatomic,assign) CGFloat titleBottomLineMargin;//左右两边的间距
 @property (nonatomic,assign) CGFloat strokeWidth;
-@property (nonatomic,assign) BOOL showRightMask;
 @property (nonatomic,assign) CGFloat titleRightGap;
 @property (nonatomic,copy) void (^shouldScrollToPage)(NSUInteger pageIndex);
 
