@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9545214B23A89D1E000F9BE6 /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9545214923A89D1E000F9BE6 /* PageViewController.m */; };
-		955F140C22D784E400DEC2E0 /* HeeeScrollPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F140822D784E400DEC2E0 /* HeeeScrollPageView.m */; };
-		955F140D22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F140A22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m */; };
+		95FCFA99240AB8AD0001F9A5 /* HeeeScrollPageTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95FCFA96240AB8AD0001F9A5 /* HeeeScrollPageTitleView.m */; };
+		95FCFA9A240AB8AD0001F9A5 /* HeeeScrollPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95FCFA98240AB8AD0001F9A5 /* HeeeScrollPageView.m */; };
 		A7FA2B0D2185600900439166 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B0C2185600900439166 /* AppDelegate.m */; };
 		A7FA2B102185600900439166 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FA2B0F2185600900439166 /* ViewController.m */; };
 		A7FA2B152185600900439166 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7FA2B142185600900439166 /* Assets.xcassets */; };
@@ -19,10 +19,10 @@
 /* Begin PBXFileReference section */
 		9545214923A89D1E000F9BE6 /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewController.m; sourceTree = "<group>"; };
 		9545214A23A89D1E000F9BE6 /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageViewController.h; sourceTree = "<group>"; };
-		955F140822D784E400DEC2E0 /* HeeeScrollPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageView.m; sourceTree = "<group>"; };
-		955F140922D784E400DEC2E0 /* HeeeScrollPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageView.h; sourceTree = "<group>"; };
-		955F140A22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageHeaderView.m; sourceTree = "<group>"; };
-		955F140B22D784E400DEC2E0 /* HeeeScrollPageHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageHeaderView.h; sourceTree = "<group>"; };
+		95FCFA95240AB8AD0001F9A5 /* HeeeScrollPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageView.h; sourceTree = "<group>"; };
+		95FCFA96240AB8AD0001F9A5 /* HeeeScrollPageTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageTitleView.m; sourceTree = "<group>"; };
+		95FCFA97240AB8AD0001F9A5 /* HeeeScrollPageTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeeeScrollPageTitleView.h; sourceTree = "<group>"; };
+		95FCFA98240AB8AD0001F9A5 /* HeeeScrollPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeeeScrollPageView.m; sourceTree = "<group>"; };
 		A7FA2B082185600900439166 /* HeeeScrollPageView-demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HeeeScrollPageView-demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7FA2B0B2185600900439166 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A7FA2B0C2185600900439166 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -80,10 +80,10 @@
 		A7FA2B24218560AD00439166 /* HeeeScrollPageView */ = {
 			isa = PBXGroup;
 			children = (
-				955F140922D784E400DEC2E0 /* HeeeScrollPageView.h */,
-				955F140822D784E400DEC2E0 /* HeeeScrollPageView.m */,
-				955F140B22D784E400DEC2E0 /* HeeeScrollPageHeaderView.h */,
-				955F140A22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m */,
+				95FCFA95240AB8AD0001F9A5 /* HeeeScrollPageView.h */,
+				95FCFA98240AB8AD0001F9A5 /* HeeeScrollPageView.m */,
+				95FCFA97240AB8AD0001F9A5 /* HeeeScrollPageTitleView.h */,
+				95FCFA96240AB8AD0001F9A5 /* HeeeScrollPageTitleView.m */,
 			);
 			path = HeeeScrollPageView;
 			sourceTree = "<group>";
@@ -157,11 +157,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A7FA2B102185600900439166 /* ViewController.m in Sources */,
-				955F140C22D784E400DEC2E0 /* HeeeScrollPageView.m in Sources */,
 				A7FA2B1B2185600900439166 /* main.m in Sources */,
-				955F140D22D784E400DEC2E0 /* HeeeScrollPageHeaderView.m in Sources */,
+				95FCFA99240AB8AD0001F9A5 /* HeeeScrollPageTitleView.m in Sources */,
 				A7FA2B0D2185600900439166 /* AppDelegate.m in Sources */,
 				9545214B23A89D1E000F9BE6 /* PageViewController.m in Sources */,
+				95FCFA9A240AB8AD0001F9A5 /* HeeeScrollPageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

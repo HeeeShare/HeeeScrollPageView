@@ -21,28 +21,30 @@
     [super viewDidLoad];
     
     NSMutableArray *pageVCArray = [NSMutableArray array];
-    for (NSUInteger i = 0; i < 6; i++) {
+    for (NSUInteger i = 0; i < 4; i++) {
         PageViewController *page = [PageViewController new];
         page.title = [NSString stringWithFormat:@"page%zd",i];
         [pageVCArray addObject:page];
     }
     
-    self.scrollPageView.pageVCArray = [pageVCArray mutableCopy];
+    self.scrollPageView.VCArray = [pageVCArray mutableCopy];
     [self.view addSubview:self.scrollPageView];
 }
 
 - (HeeeScrollPageView *)scrollPageView {
     if (!_scrollPageView) {
-        _scrollPageView = [[HeeeScrollPageView alloc] initWithFrame:CGRectMake(30, 100, 300, 500)];
-        _scrollPageView.headerBackgroundColor = [UIColor whiteColor];
-        _scrollPageView.headerViewHeight = 60;
+        _scrollPageView = [[HeeeScrollPageView alloc] init];
+        _scrollPageView.frame = CGRectMake(30, 100, 300, 500);
+        _scrollPageView.titleViewBackgroundColor = [UIColor whiteColor];
+        _scrollPageView.titleMiniHeight = 60;
+        _scrollPageView.titleMaxHeight = 60;
         _scrollPageView.titleNormalColor = [UIColor lightGrayColor];
         _scrollPageView.titleSelectedColor = [UIColor blackColor];
         _scrollPageView.titleZoomScale = 1.4;
         _scrollPageView.titleFontSize = 24;
         _scrollPageView.indicatorHeight = 2.0;
         _scrollPageView.indicatorColor = [UIColor redColor];
-        _scrollPageView.selectTitleStrokeWidth = -4;
+        _scrollPageView.strokeWidth = -4;
         
         _scrollPageView.layer.borderWidth = 0.5;
         _scrollPageView.layer.borderColor = [UIColor darkGrayColor].CGColor;

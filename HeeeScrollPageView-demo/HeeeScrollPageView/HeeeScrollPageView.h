@@ -2,30 +2,58 @@
 //  HeeeScrollPageView.h
 //  ceshi010
 //
-//  Created by Heee on 2019/7/7.
+//  Created by Heee on 2019/7/5.
 //  Copyright © 2019 WeInsight. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+@class HeeeScrollPageView;
+@class HeeeScrollPageTitleView;
 
-@interface HeeeScrollPageView : UIView
-@property (nonatomic,strong) NSArray <UIViewController *>*pageVCArray;//标题栏的文字是UIViewController的title
-@property (nonatomic,assign) BOOL spaceAround;//是否等间距占满header排列标题栏
-@property (nonatomic,assign) CGFloat headerViewHeight;//默认36
-@property (nonatomic,strong) UIColor *headerBackgroundColor;
-@property (nonatomic,strong) UIColor *titleNormalColor;
-@property (nonatomic,strong) UIColor *titleSelectedColor;
-@property (nonatomic,assign) CGFloat titleFontSize;//选中时的大小
-@property (nonatomic,assign) CGFloat titleZoomScale;//文字缩小的比例，比如：等于2时，非选中的文字等于titleFontSize的一半。
-@property (nonatomic,assign) CGFloat titleGap;//标题间距，默认20
-@property (nonatomic,strong) UIColor *indicatorColor;
-@property (nonatomic,assign) CGFloat indicatorHeight;//默认1.0
-@property (nonatomic,assign) CGFloat indicatorBottomOffset;
-@property (nonatomic,assign) CGFloat selectTitleStrokeWidth;//选中标题的字宽，默认0，表示字体没有加粗，加粗建议设置为-1～-4。
-@property (nonatomic,assign) CGFloat normalTitleStrokeWidth;//非选中标题的字宽，默认0，表示字体没有加粗，加粗建议设置为-1～-4。
-@property (nonatomic,strong) UIColor *titleBottomViewLineColor;//标题栏底部细线颜色
-@property (nonatomic,assign) CGFloat titleBottomViewLineHeight;//默认1.0
-@property (nonatomic,assign) CGFloat titleBottomViewLineHorizonalMargin;//细线左右边距，默认0
+@protocol WIScrollPageViewDelegate <NSObject>
+@optional
+- (void)scrollPageView:(HeeeScrollPageView *)scrollPageView titleViewDidChangeHeight:(CGFloat)titleViewHeight;
+- (void)scrollPageView:(HeeeScrollPageView *)scrollPageView didScrollToIndex:(NSUInteger)pageIndex isTop:(BOOL)isTop;
 
 @end
 
+@interface HeeeScrollPageView : UIView
+@property (nonatomic,assign,readonly) NSUInteger currentPage;
+@property (nonatomic,strong) NSArray <UIViewController *>*VCArray;
+@property (nonatomic,assign) BOOL spaceAround;//是否等间距占满header排列标题栏
+@property (nonatomic,strong) UIColor *titleViewBackgroundColor;
+@property (nonatomic,strong) UIColor *titleNormalColor;
+@property (nonatomic,strong) UIColor *titleSelectedColor;
+@property (nonatomic,assign) CGFloat titleFontSize;
+@property (nonatomic,assign) CGFloat titleZoomScale;
+
+//如果标题栏竖直方向高度不可变，则titleMaxHeight应与titleMaxHeight的值相等，且该值就是标题栏的高度，默认36。
+@property (nonatomic,assign) CGFloat titleMaxHeight;
+@property (nonatomic,assign) CGFloat titleMiniHeight;
+
+@property (nonatomic,assign) BOOL titleVerticalCenter;//标题竖直是否居中，否表示居底部，默认yes。
+@property (nonatomic,assign) CGFloat titleVerticalOffset;//标题竖直方向的偏移，默认0。
+@property (nonatomic,assign) CGFloat titleHorizontalGap;//标题水平方向的间距，默认20。
+
+@property (nonatomic,strong) UIColor *indicatorColor;
+@property (nonatomic,assign) CGFloat indicatorHeight;
+@property (nonatomic,assign) CGFloat indicatorWidth;//指示线的宽度，默认是文字的宽度。
+@property (nonatomic,assign) CGFloat indicatorCornerRadius;
+@property (nonatomic,assign) CGFloat indicatorVerticalOffset;//表示指示线距离底部往上偏移了多少。
+
+@property (nonatomic,strong) UIColor *titleViewBGColor;//整个标题栏的背景颜色
+@property (nonatomic,strong) UIColor *titleBottomLineColor;
+@property (nonatomic,assign) CGFloat titleBottomLineHeight;
+@property (nonatomic,assign) CGFloat titleBottomLineMargin;//左右两边的间距
+@property (nonatomic,assign) CGFloat strokeWidth;//选中标题的字宽，默认0，表示不加宽。建议加宽范围(-1~-4)
+@property (nonatomic,assign) BOOL showRightMask;//标题栏右侧渐变蒙层，颜色与标题栏背景色一致。
+@property (nonatomic,assign) CGFloat titleRightGap;//标题栏右侧多余空隙
+
+@property (nonatomic,strong,readonly) HeeeScrollPageTitleView *titleView;
+@property (nonatomic,weak) id<WIScrollPageViewDelegate> delegate;
+
+- (void)pageViewControllerDidScroll:(UIScrollView *)scrollView;
+- (void)foldTitleViewUncondition:(BOOL)uncondition;//是否无条件收起标题栏
+- (void)unfoldTitleView;//展开标题栏
+
+@end
