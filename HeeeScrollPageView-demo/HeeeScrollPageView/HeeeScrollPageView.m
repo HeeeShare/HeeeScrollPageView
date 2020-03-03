@@ -167,6 +167,7 @@
         
         if (childVC.view.superview!=self.scrollView) {
             [self.scrollView addSubview:childVC.view];
+            [[self.snapShotView viewWithTag:100+index] removeFromSuperview];
         }
         childVC.view.frame = CGRectMake(index*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.bounds.size.height);
     }
