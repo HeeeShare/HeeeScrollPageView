@@ -19,8 +19,7 @@
 @end
 
 @implementation HeeeScrollPageTitleView
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self p_setupInterface];
@@ -28,8 +27,7 @@
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self p_setupInterface];
@@ -60,23 +58,23 @@
         
         NSDictionary *attri;
         if (self.selectedIndex == idx) {
-            attri = @{
-                      NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
+            attri = @{NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:self.titleSelectedColor,
-                      NSStrokeWidthAttributeName:@(self.strokeWidth),
-                      };
+                      NSStrokeWidthAttributeName:@(self.strokeWidth)};
         }else{
-            attri = @{
-                      NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
+            attri = @{NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:self.titleNormalColor,
-                      NSStrokeWidthAttributeName:@(0),
-                      };
-            label.transform = CGAffineTransformMakeScale(1.0/self.titleZoomScale, 1.0/self.titleZoomScale);
+                      NSStrokeWidthAttributeName:@(0)};
         }
         
         NSMutableAttributedString *mAttributedString = [[NSMutableAttributedString alloc]initWithString:obj attributes:attri];
         label.attributedText = mAttributedString;
         [label sizeToFit];
+        label.frame = CGRectMake(0, 0, ceil(label.bounds.size.width), ceil(label.bounds.size.height));
+        if (self.selectedIndex != idx) {
+            label.transform = CGAffineTransformMakeScale(1.0/self.titleZoomScale, 1.0/self.titleZoomScale);
+        }
+        
         [self.scrollView addSubview:label];
         [self.labelArray addObject:label];
     }];
@@ -187,7 +185,12 @@
     }
     
     _scrollViewOffsetY = scrollViewOffsetY;
-    [self p_YChangeAttributeWithRate:0];
+    
+    CGFloat rate = (self.maxHeight - self.bounds.size.height)/(self.maxHeight - self.miniHeight);
+    if (self.maxHeight == self.miniHeight) {
+        rate = 0;
+    }
+    [self p_YChangeAttributeWithRate:rate];
     
     __block CGFloat right = 0;
     
@@ -242,6 +245,10 @@
     
     UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
     [self addGestureRecognizer:tapGes];
+    
+    if (@available(iOS 11.0, *)) {
+        _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
 }
 
 - (void)p_YChangeAttributeWithRate:(CGFloat)rate {
@@ -258,35 +265,26 @@
 - (void)p_XChangeAttributeWithRate:(CGFloat)rate firstLabel:(UILabel *)firstLabel secondLabel:(UILabel *)secondLabel {
     [self.labelArray enumerateObjectsUsingBlock:^(UILabel * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *str = self.titles[idx];
-        NSDictionary *attri = @{
-                                NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
+        NSDictionary *attri = @{NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                                 NSForegroundColorAttributeName:self.titleNormalColor,
-                                NSStrokeWidthAttributeName:@(0),
-                                };
+                                NSStrokeWidthAttributeName:@(0)};
         CGFloat zoomScale = 1.0/self.titleZoomScale;
         
         if (label == firstLabel) {
-            attri = @{
-                      NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
+            attri = @{NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:[self p_changeColorWithRate:rate andIsFirstLabel:YES],
-                      NSStrokeWidthAttributeName:@(self.strokeWidth*(1 - rate)),
-                      };
+                      NSStrokeWidthAttributeName:@(self.strokeWidth*(1 - rate))};
             zoomScale = 1.0/self.titleZoomScale + (self.currentZoomScale - 1.0/self.titleZoomScale)*(1 - rate);
         }else if (label == secondLabel){
-            attri = @{
-                      NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
+            attri = @{NSFontAttributeName:[UIFont systemFontOfSize:self.titleFontSize],
                       NSForegroundColorAttributeName:[self p_changeColorWithRate:rate andIsFirstLabel:NO],
-                      NSStrokeWidthAttributeName:@(self.strokeWidth*rate),
-                      };
+                      NSStrokeWidthAttributeName:@(self.strokeWidth*rate)};
             zoomScale = 1.0/self.titleZoomScale + (self.currentZoomScale - 1.0/self.titleZoomScale)*rate;
         }
         
-        label.transform = CGAffineTransformMakeScale(zoomScale,zoomScale);
-        if (zoomScale == 1) {
-            label.transform = CGAffineTransformIdentity;
-        }
         NSMutableAttributedString *mAttributedString = [[NSMutableAttributedString alloc] initWithString:str attributes:attri];
         label.attributedText = mAttributedString;
+        label.transform = CGAffineTransformMakeScale(zoomScale,zoomScale);
     }];
 }
 
