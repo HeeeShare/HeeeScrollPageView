@@ -19,6 +19,7 @@
 
 @interface HeeeScrollPageView : UIView
 @property (nonatomic,assign,readonly) NSUInteger currentPage;
+@property (nonatomic,assign) NSUInteger defaultPage;//默认选中的page
 @property (nonatomic,strong) NSArray <UIViewController *>*VCArray;
 @property (nonatomic,assign) BOOL spaceAround;//是否等间距占满header排列标题栏
 @property (nonatomic,strong) UIColor *titleViewBackgroundColor;
@@ -47,6 +48,7 @@
 @property (nonatomic,assign) CGFloat titleBottomLineMargin;//左右两边的间距
 @property (nonatomic,assign) CGFloat strokeWidth;//选中标题的字宽，默认0，表示不加宽。建议加宽范围(-1~-4)
 @property (nonatomic,assign) CGFloat titleRightGap;//标题栏右侧多余空隙
+@property (nonatomic,assign) CGFloat titleLeftGap;//标题栏左侧多余空隙
 
 @property (nonatomic,strong,readonly) HeeeScrollPageTitleView *titleView;
 @property (nonatomic,weak) id<WIScrollPageViewDelegate> delegate;

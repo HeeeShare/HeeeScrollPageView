@@ -52,14 +52,21 @@
 - (void)setVCArray:(NSArray<UIViewController *> *)VCArray {
     _VCArray = VCArray;
     
+    if (self.defaultPage >= VCArray.count) {
+        self.defaultPage = 0;
+    }
+    
     if (self.frame.size.width > 0) {
+        self.currentPage = self.defaultPage;
         [self p_setupTitleView];
         [self p_setupScrollView];
-        [self p_addChildVC:0];
+        [self p_addChildVC:self.defaultPage];
         
         for (NSUInteger i = 0; i < self.VCArray.count; i++) {
             [self.offsetYArray addObject:@"0"];
         }
+        
+        [self.scrollView setContentOffset:CGPointMake(self.defaultPage*self.scrollView.bounds.size.width, 0) animated:NO];
     }
 }
 
@@ -149,30 +156,6 @@
     [self.scrollView addSubview:self.snapShotView];
 }
 
-- (void)p_setupDisplayLink {
-    if (!_displayLink) {
-        _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(p_findViewController)];
-        _displayLink.paused = NO;
-        [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-    }
-}
-
-- (void)p_addChildVC:(NSUInteger)index {
-    if (self.parentVC && index < self.VCArray.count) {
-        UIViewController *childVC = self.VCArray[index];
-        if (![self.didAddVCArray containsObject:childVC]) {
-            [self.parentVC addChildViewController:childVC];
-            [self.didAddVCArray addObject:childVC];
-        }
-        
-        if (childVC.view.superview!=self.scrollView) {
-            [self.scrollView addSubview:childVC.view];
-            [[self.snapShotView viewWithTag:100+index] removeFromSuperview];
-        }
-        childVC.view.frame = CGRectMake(index*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.bounds.size.height);
-    }
-}
-
 - (void)p_setupScrollView {
     self.scrollView.frame = CGRectMake(0, self.titleView.bounds.size.height, self.bounds.size.width, self.bounds.size.height - self.titleMiniHeight);
     self.scrollView.contentSize = CGSizeMake(self.bounds.size.width*self.VCArray.count, 0);
@@ -182,6 +165,7 @@
 - (void)p_setupTitleView {
     self.titleView.backgroundColor = self.titleViewBackgroundColor;
     self.titleView.spaceAround = self.spaceAround;
+    self.titleView.defaultPage = self.defaultPage;
     self.titleView.titleNormalColor = self.titleNormalColor;
     self.titleView.titleSelectedColor = self.titleSelectedColor;
     self.titleView.maxHeight = self.titleMaxHeight;
@@ -201,6 +185,7 @@
     self.titleView.titleBottomLineMargin = self.titleBottomLineMargin;
     self.titleView.strokeWidth = self.strokeWidth;
     self.titleView.titleRightGap = self.titleRightGap;
+    self.titleView.titleLeftGap = self.titleLeftGap;
     self.titleView.frame = CGRectMake(0, 0, self.bounds.size.width, self.titleMaxHeight);
     
     NSMutableArray *titles = [NSMutableArray array];
@@ -210,6 +195,15 @@
     
     self.titleView.titles = titles;
     self.titleView.scrollViewOffsetY = 0;
+    self.titleView.scrollViewOffsetX = self.defaultPage*self.titleView.bounds.size.width;
+}
+
+- (void)p_setupDisplayLink {
+    if (!_displayLink) {
+        _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(p_findViewController)];
+        _displayLink.paused = NO;
+        [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    }
 }
 
 - (void)p_findViewController {
@@ -218,7 +212,7 @@
         [_displayLink invalidate];
         _displayLink = nil;
         
-        [self p_addChildVC:0];
+        [self p_addChildVC:self.currentPage];
     }
 }
 
@@ -232,6 +226,22 @@
     }
     
     return nil;
+}
+
+- (void)p_addChildVC:(NSUInteger)index {
+    if (self.parentVC && index < self.VCArray.count) {
+        UIViewController *childVC = self.VCArray[index];
+        if (![self.didAddVCArray containsObject:childVC]) {
+            [self.parentVC addChildViewController:childVC];
+            [self.didAddVCArray addObject:childVC];
+        }
+        
+        if (childVC.view.superview!=self.scrollView) {
+            [self.scrollView addSubview:childVC.view];
+            [[self.snapShotView viewWithTag:100+index] removeFromSuperview];
+        }
+        childVC.view.frame = CGRectMake(index*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.bounds.size.height);
+    }
 }
 
 #pragma mark - UIScrollViewDelegate

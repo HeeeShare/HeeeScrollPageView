@@ -10,6 +10,7 @@
 
 @interface HeeeScrollPageTitleView : UIView
 @property (nonatomic,strong) NSArray <NSString *>*titles;
+@property (nonatomic,assign) NSUInteger defaultPage;//默认选中的page
 @property (nonatomic,assign) BOOL spaceAround;
 @property (nonatomic,strong) UIColor *titleNormalColor;
 @property (nonatomic,strong) UIColor *titleSelectedColor;
@@ -32,6 +33,7 @@
 @property (nonatomic,assign) CGFloat titleBottomLineMargin;//左右两边的间距
 @property (nonatomic,assign) CGFloat strokeWidth;
 @property (nonatomic,assign) CGFloat titleRightGap;
+@property (nonatomic,assign) CGFloat titleLeftGap;
 @property (nonatomic,copy) void (^shouldScrollToPage)(NSUInteger pageIndex);
 
 @end

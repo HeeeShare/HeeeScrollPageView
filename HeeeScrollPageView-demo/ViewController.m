@@ -36,15 +36,16 @@
         _scrollPageView = [[HeeeScrollPageView alloc] init];
         _scrollPageView.frame = CGRectMake(30, 100, 300, 500);
         _scrollPageView.titleViewBackgroundColor = [UIColor whiteColor];
-        _scrollPageView.titleMiniHeight = 60;
-        _scrollPageView.titleMaxHeight = 60;
+        _scrollPageView.titleMiniHeight = 40;
+        _scrollPageView.titleMaxHeight = 40;
         _scrollPageView.titleNormalColor = [UIColor lightGrayColor];
         _scrollPageView.titleSelectedColor = [UIColor blackColor];
-        _scrollPageView.titleZoomScale = 1.4;
-        _scrollPageView.titleFontSize = 24;
+        _scrollPageView.titleZoomScale = 1.2;
+        _scrollPageView.titleFontSize = 18;
         _scrollPageView.indicatorHeight = 2.0;
         _scrollPageView.indicatorColor = [UIColor redColor];
         _scrollPageView.strokeWidth = -4;
+        _scrollPageView.defaultPage = 2;
         
         _scrollPageView.layer.borderWidth = 0.5;
         _scrollPageView.layer.borderColor = [UIColor darkGrayColor].CGColor;

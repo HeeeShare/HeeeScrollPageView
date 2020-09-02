@@ -44,11 +44,16 @@
 }
 
 - (void)setTitles:(NSArray<NSString *> *)titles {
+    if (self.defaultPage >= titles.count) {
+        self.defaultPage = 0;
+    }
+    
     [self.labelArray makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self.labelArray removeAllObjects];
     self.scrollView.frame = self.bounds;
     _titles = titles;
     self.currentZoomScale = 1.0;
+    self.selectedIndex = self.defaultPage;
     self.bottomLine.backgroundColor = self.titleBottomLineColor;
     self.bottomLine.frame = CGRectMake(self.titleBottomLineMargin, self.bounds.size.height - self.titleBottomLineHeight, self.bounds.size.width - 2*self.titleBottomLineMargin, self.titleBottomLineHeight);
     
@@ -79,7 +84,7 @@
         [self.labelArray addObject:label];
     }];
     
-    [self handleOffset:0];
+    [self handleOffset:self.selectedIndex*self.scrollView.bounds.size.width];
 }
 
 - (void)setScrollViewOffsetX:(CGFloat)scrollViewOffsetX {
@@ -128,7 +133,7 @@
     [self.labelArray enumerateObjectsUsingBlock:^(UILabel * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
         CGFloat labelW = label.frame.size.width;
         CGFloat labelH = label.frame.size.height;
-        CGFloat labelX = right + self.titleHorizontalGap*(idx==0?0.5:1.0);
+        CGFloat labelX = right + self.titleHorizontalGap*(idx==0?0.5:1.0) + (idx==0?self.titleLeftGap:0);
         CGFloat labelY = (self.bounds.size.height - labelH)/(self.titleVerticalCenter?2:1) - self.titleVerticalOffset;
         
         label.frame = CGRectMake(labelX, labelY, labelW, labelH);
