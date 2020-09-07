@@ -239,6 +239,9 @@
         if (childVC.view.superview!=self.scrollView) {
             [self.scrollView addSubview:childVC.view];
             [[self.snapShotView viewWithTag:100+index] removeFromSuperview];
+            if (_delegate && [_delegate respondsToSelector:@selector(scrollPageView:willScrollToIndex:)]) {
+                [_delegate scrollPageView:self willScrollToIndex:index];
+            }
         }
         childVC.view.frame = CGRectMake(index*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.bounds.size.height);
     }

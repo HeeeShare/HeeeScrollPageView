@@ -13,7 +13,8 @@
 @protocol WIScrollPageViewDelegate <NSObject>
 @optional
 - (void)scrollPageView:(HeeeScrollPageView *)scrollPageView titleViewDidChangeHeight:(CGFloat)titleViewHeight;
-- (void)scrollPageView:(HeeeScrollPageView *)scrollPageView didScrollToIndex:(NSUInteger)pageIndex isTop:(BOOL)isTop;
+- (void)scrollPageView:(HeeeScrollPageView *)scrollPageView willScrollToIndex:(NSInteger)pageIndex;
+- (void)scrollPageView:(HeeeScrollPageView *)scrollPageView didScrollToIndex:(NSInteger)pageIndex isTop:(BOOL)isTop;
 
 @end
 
