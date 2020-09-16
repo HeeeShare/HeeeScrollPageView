@@ -131,6 +131,11 @@
     });
 }
 
+- (void)setSelectedPageIndex:(NSInteger)selectedIndex animate:(BOOL)animate {
+    self.clickTitleIndex = selectedIndex;
+    [self.scrollView setContentOffset:CGPointMake(selectedIndex*self.scrollView.bounds.size.width, 0) animated:animate];
+}
+
 #pragma mark - private
 - (void)p_setupSubView {
     self.titleViewBackgroundColor = [UIColor whiteColor];

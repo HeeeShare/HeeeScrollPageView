@@ -53,6 +53,8 @@
 
 @property (nonatomic,strong,readonly) HeeeScrollPageTitleView *titleView;
 @property (nonatomic,weak) id<WIScrollPageViewDelegate> delegate;
+- (void)setSelectedPageIndex:(NSInteger)selectedIndex animate:(BOOL)animate
+
 
 - (void)pageViewControllerDidScroll:(UIScrollView *)scrollView;
 - (void)foldTitleViewUncondition:(BOOL)uncondition;//是否无条件收起标题栏
