@@ -7,7 +7,6 @@
 //
 
 #import "HeeeScrollPageView.h"
-#import "HeeeScrollPageTitleView.h"
 
 @interface HeeeScrollPageView ()<UIScrollViewDelegate>
 @property (nonatomic,  weak) UIViewController *parentVC;
