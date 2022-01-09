@@ -176,7 +176,6 @@
         
         label.frame = CGRectMake(labelX, labelY, labelW, labelH);
         right = labelX + labelW;
-        
         if (firstPage == idx) {
             firstLabelWidth = labelW;
             firstLabelCenterX = label.center.x;
@@ -245,8 +244,9 @@
     }else if (self.titleArrangement == HeeeTitleArrangementCenter) {
         CGFloat totalWidth = 0;
         for (UILabel *titleL in self.labelArray) {
-            totalWidth+=titleL.frame.size.width/self.titleZoomScale;
+            totalWidth+=titleL.frame.size.width;
         }
+        totalWidth+=self.labelArray.count*self.titleHorizontalGap;
         right = (self.bounds.size.width - totalWidth)/2;
     }
     
@@ -258,7 +258,6 @@
         
         label.frame = CGRectMake(labelX, labelY, labelW, labelH);
         right = labelX + labelW;
-        
         if (self.selectedIndex == idx) {
             CGFloat indicatorViewW = labelW;
             CGFloat indicatorViewH = self.indicatorHeight;
