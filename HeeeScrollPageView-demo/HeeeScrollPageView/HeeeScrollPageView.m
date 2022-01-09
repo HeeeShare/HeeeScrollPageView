@@ -8,10 +8,21 @@
 
 #import "HeeeScrollPageView.h"
 
+@interface CustomScrollView : UIScrollView
+
+@end
+
+@implementation CustomScrollView
+- (BOOL)touchesShouldCancelInContentView:(UIView *)view {
+    return YES;
+}
+
+@end
+
 @interface HeeeScrollPageView ()<UIScrollViewDelegate>
 @property (nonatomic,  weak) UIViewController *parentVC;
 @property (nonatomic,strong) HeeeScrollPageTitleView *titleView;
-@property (nonatomic,strong) UIScrollView *scrollView;
+@property (nonatomic,strong) CustomScrollView *scrollView;
 @property (nonatomic,strong) CADisplayLink *displayLink;
 @property (nonatomic,strong) NSMutableArray *didAddVCArray;
 @property (nonatomic,assign) CGFloat offset;
@@ -19,6 +30,8 @@
 @property (nonatomic,strong) NSMutableArray <NSString *>*offsetYArray;
 @property (nonatomic,strong) UIView *snapShotView;
 @property (nonatomic,assign) NSInteger clickTitleIndex;
+@property (nonatomic,assign) CGRect lastFrame;
+@property (nonatomic,assign) BOOL firstLoad;
 
 @end
 
@@ -48,6 +61,18 @@
     }
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    if (self.bounds.size.width) {
+        [self p_setupTitleView];
+    }
+    
+    if (self.bounds.size.width != self.lastFrame.size.width || self.bounds.size.height != self.lastFrame.size.height) {
+        [self p_setupFrame];
+    }
+}
+
 - (void)setVCArray:(NSArray<UIViewController *> *)VCArray {
     _VCArray = VCArray;
     
@@ -55,47 +80,44 @@
         self.defaultPage = 0;
     }
     
-    if (self.frame.size.width > 0) {
-        self.currentPage = self.defaultPage;
-        [self p_setupTitleView];
-        [self p_setupScrollView];
-        [self p_addChildVC:self.defaultPage];
-        
-        for (NSUInteger i = 0; i < self.VCArray.count; i++) {
-            [self.offsetYArray addObject:@"0"];
-        }
-        
-        [self.scrollView setContentOffset:CGPointMake(self.defaultPage*self.scrollView.bounds.size.width, 0) animated:NO];
+    self.currentPage = self.defaultPage;
+    [self p_addChildVC:self.currentPage];
+    
+    for (NSUInteger i = 0; i < self.VCArray.count; i++) {
+        [self.offsetYArray addObject:@"0"];
     }
+    
+    [self p_setupTitleView];
+    [self p_setupFrame];
 }
 
 - (void)pageViewControllerDidScroll:(UIScrollView *)scrollView {
 //    if (scrollView.mj_header.isRefreshing || scrollView.mj_footer.isRefreshing) {
 //        return;
 //    }
-    
-    CGFloat offsetY = scrollView.contentOffset.y;
-    
-    if (self.scrollView.contentOffset.x - self.currentPage*self.scrollView.bounds.size.width == 0) {
-        self.offsetYArray[self.currentPage] = [NSString stringWithFormat:@"%f",offsetY];
-    }
-    
-    if (self.offset >= self.titleMaxHeight - self.titleMiniHeight) {
-        self.offset = self.titleMaxHeight - self.titleMiniHeight;
-    }else if(self.offset <= 0) {
-        self.offset = 0;
-    }else{
+//
+//    CGFloat offsetY = scrollView.contentOffset.y;
+//
+//    if (self.scrollView.contentOffset.x - self.currentPage*self.scrollView.bounds.size.width == 0) {
+//        self.offsetYArray[self.currentPage] = [NSString stringWithFormat:@"%f",offsetY];
+//    }
+//
+//    if (self.offset >= self.titleMaxHeight - self.titleMiniHeight) {
+//        self.offset = self.titleMaxHeight - self.titleMiniHeight;
+//    }else if(self.offset <= 0) {
+//        self.offset = 0;
+//    }else{
 //        [scrollView setContentOffset:CGPointMake(0, scrollView.mj_header.isRefreshing?-scrollView.mj_header.height:0)];
-    }
-    
-    self.titleView.frame = CGRectMake(0, 0, self.bounds.size.width, self.titleMaxHeight - self.offset);
-    self.scrollView.frame = CGRectMake(0, self.titleView.frame.origin.y + self.titleView.bounds.size.height, self.bounds.size.width, self.bounds.size.height - self.titleMiniHeight);
-    self.titleView.scrollViewOffsetY = self.offset;
-    self.offset += offsetY;
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(scrollPageView:titleViewDidChangeHeight:)]) {
-        [self.delegate scrollPageView:self titleViewDidChangeHeight:self.titleView.bounds.size.height];
-    }
+//    }
+//
+//    self.titleView.frame = CGRectMake(0, 0, self.bounds.size.width, self.titleMaxHeight - self.offset);
+//    self.scrollView.frame = CGRectMake(0, self.titleView.frame.origin.y + self.titleView.bounds.size.height, self.bounds.size.width, self.bounds.size.height - self.titleMiniHeight);
+//    self.titleView.scrollViewOffsetY = self.offset;
+//    self.offset += offsetY;
+//
+//    if (self.delegate && [self.delegate respondsToSelector:@selector(scrollPageView:titleViewDidChangeHeight:)]) {
+//        [self.delegate scrollPageView:self titleViewDidChangeHeight:self.titleView.bounds.size.height];
+//    }
 }
 
 - (void)foldTitleViewUncondition:(BOOL)uncondition {
@@ -137,6 +159,7 @@
 
 #pragma mark - private
 - (void)p_setupSubView {
+    self.firstLoad = YES;
     self.titleViewBackgroundColor = [UIColor whiteColor];
     self.titleNormalColor = [UIColor lightGrayColor];
     self.titleSelectedColor = [UIColor blackColor];
@@ -158,48 +181,6 @@
     [self addSubview:self.titleView];
     [self addSubview:self.scrollView];
     [self.scrollView addSubview:self.snapShotView];
-}
-
-- (void)p_setupScrollView {
-    self.scrollView.frame = CGRectMake(0, self.titleView.bounds.size.height, self.bounds.size.width, self.bounds.size.height - self.titleMiniHeight);
-    self.scrollView.contentSize = CGSizeMake(self.bounds.size.width*self.VCArray.count, 0);
-    self.snapShotView.frame = CGRectMake(0, 0, self.scrollView.contentSize.width, self.scrollView.bounds.size.height);
-}
-
-- (void)p_setupTitleView {
-    self.titleView.backgroundColor = self.titleViewBackgroundColor;
-    self.titleView.spaceAround = self.spaceAround;
-    self.titleView.defaultPage = self.defaultPage;
-    self.titleView.titleNormalColor = self.titleNormalColor;
-    self.titleView.titleSelectedColor = self.titleSelectedColor;
-    self.titleView.maxHeight = self.titleMaxHeight;
-    self.titleView.miniHeight = self.titleMiniHeight;
-    self.titleView.titleZoomScale = self.titleZoomScale;
-    self.titleView.titleFontSize = self.titleFontSize;
-    self.titleView.indicatorHeight = self.indicatorHeight;
-    self.titleView.indicatorWidth = self.indicatorWidth;
-    self.titleView.indicatorCornerRadius = self.indicatorCornerRadius;
-    self.titleView.indicatorColor = self.indicatorColor;
-    self.titleView.indicatorVerticalOffset = self.indicatorVerticalOffset;
-    self.titleView.titleVerticalCenter = self.titleVerticalCenter;
-    self.titleView.titleVerticalOffset = self.titleVerticalOffset;
-    self.titleView.titleHorizontalGap = self.titleHorizontalGap;
-    self.titleView.titleBottomLineHeight = self.titleBottomLineHeight;
-    self.titleView.titleBottomLineColor = self.titleBottomLineColor;
-    self.titleView.titleBottomLineMargin = self.titleBottomLineMargin;
-    self.titleView.strokeWidth = self.strokeWidth;
-    self.titleView.titleRightGap = self.titleRightGap;
-    self.titleView.titleLeftGap = self.titleLeftGap;
-    self.titleView.frame = CGRectMake(0, 0, self.bounds.size.width, self.titleMaxHeight);
-    
-    NSMutableArray *titles = [NSMutableArray array];
-    for (UIViewController *vc in self.VCArray) {
-        [titles addObject:vc.title?vc.title:@""];
-    }
-    
-    self.titleView.titles = titles;
-    self.titleView.scrollViewOffsetY = 0;
-    self.titleView.scrollViewOffsetX = self.defaultPage*self.titleView.bounds.size.width;
 }
 
 - (void)p_setupDisplayLink {
@@ -251,6 +232,61 @@
     }
 }
 
+- (void)p_setupFrame {
+    self.lastFrame = self.frame;
+    self.scrollView.frame = CGRectMake(0, self.titleView.bounds.size.height, self.bounds.size.width, self.bounds.size.height - self.titleView.bounds.size.height);
+    self.scrollView.contentSize = CGSizeMake(self.bounds.size.width*self.VCArray.count, 0);
+    self.snapShotView.frame = CGRectMake(0, 0, self.scrollView.contentSize.width, self.scrollView.bounds.size.height);
+    [self.scrollView setContentOffset:CGPointMake(self.currentPage*self.scrollView.bounds.size.width, 0) animated:NO];
+    
+    if (self.VCArray.count > self.currentPage) {
+        UIViewController *childVC = self.VCArray[self.currentPage];
+        if ([self.didAddVCArray containsObject:childVC]) {
+            childVC.view.frame = CGRectMake(self.currentPage*self.bounds.size.width, 0, self.bounds.size.width, _scrollView.bounds.size.height);
+        }
+    }
+}
+
+- (void)p_setupTitleView {
+    self.titleView.backgroundColor = self.titleViewBackgroundColor;
+    self.titleView.defaultPage = self.defaultPage;
+    self.titleView.titleArrangement = self.titleArrangement;
+    self.titleView.titleNormalColor = self.titleNormalColor;
+    self.titleView.titleSelectedColor = self.titleSelectedColor;
+    self.titleView.maxHeight = self.titleMaxHeight;
+    self.titleView.miniHeight = self.titleMiniHeight;
+    self.titleView.titleZoomScale = self.titleZoomScale;
+    self.titleView.titleFontSize = self.titleFontSize;
+    self.titleView.indicatorHeight = self.indicatorHeight;
+    self.titleView.indicatorWidth = self.indicatorWidth;
+    self.titleView.indicatorCornerRadius = self.indicatorCornerRadius;
+    self.titleView.indicatorColor = self.indicatorColor;
+    self.titleView.indicatorVerticalOffset = self.indicatorVerticalOffset;
+    self.titleView.titleVerticalCenter = self.titleVerticalCenter;
+    self.titleView.titleVerticalOffset = self.titleVerticalOffset;
+    self.titleView.titleHorizontalGap = self.titleHorizontalGap;
+    self.titleView.titleBottomLineHeight = self.titleBottomLineHeight;
+    self.titleView.titleBottomLineColor = self.titleBottomLineColor;
+    self.titleView.titleBottomLineMargin = self.titleBottomLineMargin;
+    self.titleView.strokeWidth = self.strokeWidth;
+    self.titleView.titleRightGap = self.titleRightGap;
+    self.titleView.titleLeftGap = self.titleLeftGap;
+    self.titleView.frame = CGRectMake(0, 0, self.bounds.size.width, self.titleMaxHeight);
+    
+    NSMutableArray *titles = [NSMutableArray array];
+    for (UIViewController *vc in self.VCArray) {
+        [titles addObject:vc.title?vc.title:@""];
+    }
+    
+    self.titleView.titles = titles;
+    self.titleView.scrollViewOffsetY = 0;
+    if (self.firstLoad) {
+        self.titleView.scrollViewOffsetX = self.defaultPage*self.titleView.bounds.size.width;
+    }
+    
+    self.firstLoad = NO;
+}
+
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat offsetX = scrollView.contentOffset.x;
@@ -295,6 +331,14 @@
     }
 }
 
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    
+}
+
 #pragma mark - lazy
 - (HeeeScrollPageTitleView *)titleView {
     if (!_titleView) {
@@ -313,9 +357,9 @@
     return _titleView;
 }
 
-- (UIScrollView *)scrollView {
+- (CustomScrollView *)scrollView {
     if (!_scrollView) {
-        _scrollView = [[UIScrollView alloc] init];
+        _scrollView = [[CustomScrollView alloc] init];
         _scrollView.delegate = self;
         _scrollView.showsVerticalScrollIndicator = NO;
         _scrollView.showsHorizontalScrollIndicator = NO;

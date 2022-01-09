@@ -10,7 +10,7 @@
 #import "HeeeScrollPageTitleView.h"
 @class HeeeScrollPageView;
 
-@protocol WIScrollPageViewDelegate <NSObject>
+@protocol HeeeScrollPageViewDelegate <NSObject>
 @optional
 - (void)scrollPageView:(HeeeScrollPageView *)scrollPageView titleViewDidChangeHeight:(CGFloat)titleViewHeight;
 - (void)scrollPageView:(HeeeScrollPageView *)scrollPageView willScrollToIndex:(NSInteger)pageIndex;
@@ -19,10 +19,11 @@
 @end
 
 @interface HeeeScrollPageView : UIView
+@property (nonatomic,strong,readonly) UIScrollView *scrollView;
 @property (nonatomic,assign,readonly) NSUInteger currentPage;
 @property (nonatomic,assign) NSUInteger defaultPage;//默认选中的page
 @property (nonatomic,strong) NSArray <UIViewController *>*VCArray;
-@property (nonatomic,assign) BOOL spaceAround;//是否等间距占满header排列标题栏
+@property (nonatomic,assign) HeeeTitleArrangement titleArrangement;
 @property (nonatomic,strong) UIColor *titleViewBackgroundColor;
 @property (nonatomic,strong) UIColor *titleNormalColor;
 @property (nonatomic,strong) UIColor *titleSelectedColor;
@@ -43,16 +44,16 @@
 @property (nonatomic,assign) CGFloat indicatorCornerRadius;
 @property (nonatomic,assign) CGFloat indicatorVerticalOffset;//表示指示线距离底部往上偏移了多少。
 
-@property (nonatomic,strong) UIColor *titleViewBGColor;//整个标题栏的背景颜色
 @property (nonatomic,strong) UIColor *titleBottomLineColor;
 @property (nonatomic,assign) CGFloat titleBottomLineHeight;
 @property (nonatomic,assign) CGFloat titleBottomLineMargin;//左右两边的间距
+
 @property (nonatomic,assign) CGFloat strokeWidth;//选中标题的字宽，默认0，表示不加宽。建议加宽范围(-1~-4)
 @property (nonatomic,assign) CGFloat titleRightGap;//标题栏右侧多余空隙
 @property (nonatomic,assign) CGFloat titleLeftGap;//标题栏左侧多余空隙
 
 @property (nonatomic,strong,readonly) HeeeScrollPageTitleView *titleView;
-@property (nonatomic,weak) id<WIScrollPageViewDelegate> delegate;
+@property (nonatomic,weak) id<HeeeScrollPageViewDelegate> delegate;
 
 - (void)setSelectedPageIndex:(NSInteger)selectedIndex animate:(BOOL)animate;
 

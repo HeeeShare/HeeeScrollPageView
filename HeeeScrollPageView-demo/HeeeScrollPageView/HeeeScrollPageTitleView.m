@@ -15,6 +15,7 @@
 @property (nonatomic,strong) UIView *indicatorView;
 @property (nonatomic,assign) CGFloat currentZoomScale;
 @property (nonatomic,strong) UIView *bottomLine;
+@property (nonatomic,assign) BOOL firstLoad;
 
 @end
 
@@ -53,7 +54,11 @@
     self.scrollView.frame = self.bounds;
     _titles = titles;
     self.currentZoomScale = 1.0;
-    self.selectedIndex = self.defaultPage;
+    if (self.firstLoad) {
+        self.selectedIndex = self.defaultPage;
+    }
+    self.firstLoad = NO;
+    
     self.bottomLine.backgroundColor = self.titleBottomLineColor;
     self.bottomLine.frame = CGRectMake(self.titleBottomLineMargin, self.bounds.size.height - self.titleBottomLineHeight, self.bounds.size.width - 2*self.titleBottomLineMargin, self.titleBottomLineHeight);
     
@@ -93,6 +98,31 @@
 }
 
 - (void)handleOffset:(CGFloat)offset {
+    if (self.labelArray.count == 1) {
+        UILabel *titleLabel = self.labelArray.firstObject;
+        if (self.titleArrangement == HeeeTitleArrangementCenter || self.titleArrangement == HeeeTitleArrangementSpaceAround) {
+            CGFloat labelW = titleLabel.frame.size.width;
+            CGFloat labelH = titleLabel.frame.size.height;
+            CGFloat labelX = (self.bounds.size.width - titleLabel.frame.size.width)/2;
+            CGFloat labelY = (self.bounds.size.height - labelH)/(self.titleVerticalCenter?2:1) - self.titleVerticalOffset;
+            titleLabel.frame = CGRectMake(labelX, labelY, labelW, labelH);
+        }else{
+            CGFloat labelW = titleLabel.frame.size.width;
+            CGFloat labelH = titleLabel.frame.size.height;
+            CGFloat labelX = self.titleLeftGap;
+            CGFloat labelY = (self.bounds.size.height - labelH)/(self.titleVerticalCenter?2:1) - self.titleVerticalOffset;
+            titleLabel.frame = CGRectMake(labelX, labelY, labelW, labelH);
+        }
+        
+        CGFloat indicatorViewW = self.indicatorWidth==0?titleLabel.frame.size.width:self.indicatorWidth;
+        CGFloat indicatorViewH = self.indicatorHeight;
+        CGFloat indicatorViewX = CGRectGetMidX(titleLabel.frame) - indicatorViewW/2;
+        CGFloat indicatorViewY = self.bounds.size.height - indicatorViewH - self.titleBottomLineHeight - self.indicatorVerticalOffset;
+        self.indicatorView.frame = CGRectMake(indicatorViewX, indicatorViewY, indicatorViewW, indicatorViewH);
+        self.indicatorView.backgroundColor = self.indicatorColor;
+        self.indicatorView.layer.cornerRadius = self.indicatorCornerRadius;
+    }
+    
     if (offset < 0 || offset > (self.labelArray.count - 1)*self.bounds.size.width || self.labelArray.count < 2) {
         return;
     }
@@ -117,19 +147,27 @@
     UILabel *secondLabel = self.labelArray[secondPage];
     [self p_XChangeAttributeWithRate:rate firstLabel:firstLabel secondLabel:secondLabel];
     
-    if (self.spaceAround) {
-        CGFloat totalWidth = 0;
-        for (UILabel *titleL in self.labelArray) {
-            totalWidth+=titleL.bounds.size.width/self.titleZoomScale;
-        }
-        self.titleHorizontalGap = (self.bounds.size.width - totalWidth)/self.labelArray.count;
-    }
-    
     __block CGFloat right = 0;
     __block CGFloat firstLabelWidth = 0;
     __block CGFloat secondLabelWidth = 0;
     __block CGFloat firstLabelCenterX = 0;
     __block CGFloat secondLabelCenterX = 0;
+    
+    if (self.titleArrangement == HeeeTitleArrangementSpaceAround) {
+        CGFloat totalWidth = 0;
+        for (UILabel *titleL in self.labelArray) {
+            totalWidth+=titleL.frame.size.width/self.titleZoomScale;
+        }
+        self.titleHorizontalGap = (self.bounds.size.width - totalWidth)/self.labelArray.count;
+    }else if (self.titleArrangement == HeeeTitleArrangementCenter) {
+        CGFloat totalWidth = 0;
+        for (UILabel *titleL in self.labelArray) {
+            totalWidth+=titleL.frame.size.width;
+        }
+        totalWidth+=self.labelArray.count*self.titleHorizontalGap;
+        right = (self.bounds.size.width - totalWidth)/2;
+    }
+    
     [self.labelArray enumerateObjectsUsingBlock:^(UILabel * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
         CGFloat labelW = label.frame.size.width;
         CGFloat labelH = label.frame.size.height;
@@ -161,7 +199,7 @@
     UILabel *lastLabel = self.labelArray.lastObject;
     self.scrollView.contentSize = CGSizeMake(lastLabel.frame.origin.x + lastLabel.frame.size.width + self.titleHorizontalGap/2 + self.titleRightGap, 0);
     
-    if (!self.spaceAround && self.scrollView.contentSize.width > self.bounds.size.width) {
+    if (self.titleArrangement == HeeeTitleArrangementDefault && self.scrollView.contentSize.width > self.bounds.size.width) {
         CGFloat offsetX = 0;
         CGFloat firstLabelX = firstLabel.center.x;
         CGFloat secondLabelX = secondLabel.center.x;
@@ -177,7 +215,7 @@
             offsetX = self.scrollView.contentSize.width - self.bounds.size.width;
         }
         
-        [self.scrollView setContentOffset:CGPointMake(offsetX, 0) animated:NO];
+        [self.scrollView setContentOffset:CGPointMake(offsetX, 0) animated:YES];
     }
 }
 
@@ -198,19 +236,24 @@
     [self p_YChangeAttributeWithRate:rate];
     
     __block CGFloat right = 0;
-    
-    if (self.spaceAround) {
+    if (self.titleArrangement == HeeeTitleArrangementSpaceAround) {
         CGFloat totalWidth = 0;
         for (UILabel *titleL in self.labelArray) {
-            totalWidth+=titleL.bounds.size.width/self.titleZoomScale;
+            totalWidth+=titleL.frame.size.width/self.titleZoomScale;
         }
         self.titleHorizontalGap = (self.bounds.size.width - totalWidth)/self.labelArray.count;
+    }else if (self.titleArrangement == HeeeTitleArrangementCenter) {
+        CGFloat totalWidth = 0;
+        for (UILabel *titleL in self.labelArray) {
+            totalWidth+=titleL.frame.size.width/self.titleZoomScale;
+        }
+        right = (self.bounds.size.width - totalWidth)/2;
     }
     
     [self.labelArray enumerateObjectsUsingBlock:^(UILabel * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
         CGFloat labelW = label.frame.size.width;
         CGFloat labelH = label.frame.size.height;
-        CGFloat labelX = right + self.titleHorizontalGap*(idx==0?0.5:1.0);
+        CGFloat labelX = right + self.titleHorizontalGap*(idx==0?0.5:1.0) + (idx==0?self.titleLeftGap:0);
         CGFloat labelY = (self.bounds.size.height - labelH)/(self.titleVerticalCenter?2:1) - self.titleVerticalOffset;
         
         label.frame = CGRectMake(labelX, labelY, labelW, labelH);
@@ -243,6 +286,7 @@
 
 #pragma mark - private
 - (void)p_setupInterface {
+    self.firstLoad = YES;
     self.clipsToBounds = YES;
     [self addSubview:self.scrollView];
     [self addSubview:self.bottomLine];

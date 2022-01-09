@@ -7,11 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+typedef enum : NSUInteger {
+    HeeeTitleArrangementDefault,//标题从左到右排列
+    HeeeTitleArrangementSpaceAround,//标题等间距排列
+    HeeeTitleArrangementCenter,//标题居中排列
+} HeeeTitleArrangement;
 
 @interface HeeeScrollPageTitleView : UIView
 @property (nonatomic,strong) NSArray <NSString *>*titles;
-@property (nonatomic,assign) NSUInteger defaultPage;//默认选中的page
-@property (nonatomic,assign) BOOL spaceAround;
+@property (nonatomic,strong,readonly) NSMutableArray <UILabel *>*labelArray;
+@property (nonatomic,assign) NSUInteger defaultPage;
+@property (nonatomic,assign) HeeeTitleArrangement titleArrangement;
 @property (nonatomic,strong) UIColor *titleNormalColor;
 @property (nonatomic,strong) UIColor *titleSelectedColor;
 @property (nonatomic,assign) CGFloat titleFontSize;
@@ -34,6 +40,7 @@
 @property (nonatomic,assign) CGFloat strokeWidth;
 @property (nonatomic,assign) CGFloat titleRightGap;
 @property (nonatomic,assign) CGFloat titleLeftGap;
+@property (nonatomic,strong) UIColor *titleViewBGColor;
 @property (nonatomic,copy) void (^shouldScrollToPage)(NSUInteger pageIndex);
 
 @end
